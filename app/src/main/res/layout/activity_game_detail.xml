@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:padding="24dp">
+
+    <TextView android:id="@+id/tvTitulo"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" android:textSize="26sp" android:textStyle="bold" />
+    <TextView android:id="@+id/tvPlataforma"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" android:textSize="16sp" />
+    <TextView android:id="@+id/tvStatus"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" android:textSize="16sp" />
+    <TextView android:id="@+id/tvNota"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" android:textSize="16sp" />
+    <TextView android:id="@+id/tvHoras"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+    <Button android:id="@+id/btnExcluir"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="32dp" android:text="Excluir" />
+</LinearLayout>
