@@ -1,65 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="24dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" android:text="Novo jogo"
-            android:textSize="24sp" android:textStyle="bold" />
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        app:navigationContentDescription="Voltar"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="Novo jogo" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilTitulo"
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:hint="Título">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTitulo"
+            android:orientation="vertical" android:padding="16dp">
+
+            <!-- Capa -->
+            <LinearLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:inputType="textCapWords" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivCapa"
+                    android:layout_width="96dp" android:layout_height="144dp"
+                    android:contentDescription="Capa do jogo"
+                    android:scaleType="centerCrop" />
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp" android:layout_weight="1"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/btnEscolherCapa"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:text="Escolher capa" />
+                    <Button
+                        android:id="@+id/btnRemoverCapa"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:text="Remover capa" />
+                </LinearLayout>
+            </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilPlataforma"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" android:hint="Plataforma (PC, PS5, Switch...)">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPlataforma"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilTitulo"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:inputType="textCapWords" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="16dp" android:hint="Título *"
+                app:counterEnabled="true" app:counterMaxLength="100">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTitulo"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textCapWords" android:maxLength="100" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:text="Status" />
-        <Spinner
-            android:id="@+id/spStatus"
-            android:layout_width="match_parent" android:layout_height="48dp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilNota"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" android:hint="Nota (0 a 10)">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNota"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPlataforma"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="8dp" android:hint="Plataforma *">
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acPlataforma"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilHoras"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" android:hint="Horas jogadas">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etHoras"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilStatus"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="12dp" android:hint="Status *">
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acStatus"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btnSalvar"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="24dp" android:text="Salvar" />
-    </LinearLayout>
-</ScrollView>
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilNota"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" android:layout_weight="1"
+                    android:hint="Nota (0 a 10)">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etNota"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilHoras"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp" android:layout_weight="1"
+                    android:hint="Horas jogadas *">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etHoras"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilLancamento"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" android:hint="Data de lançamento"
+                app:endIconContentDescription="Limpar data"
+                app:endIconDrawable="@drawable/ic_fechar"
+                app:endIconMode="custom">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLancamento"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilDesenvolvedora"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" android:hint="Desenvolvedora">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDesenvolvedora"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textCapWords" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilGenero"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" android:hint="Gênero">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etGenero"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilDescricao"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" android:hint="Descrição">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDescricao"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:minLines="3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btnSalvar"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="24dp" android:text="Salvar" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
