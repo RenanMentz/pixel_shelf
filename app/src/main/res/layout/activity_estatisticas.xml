@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/preto"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        app:navigationContentDescription="Voltar"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="Estatísticas" />
+
+    <!-- Biblioteca vazia -->
+    <TextView
+        android:id="@+id/tvVazio"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="32dp"
+        android:text="Cadastre jogos na biblioteca para ver suas estatísticas."
+        android:textColor="@color/texto_secundario"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/conteudo"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:paddingHorizontal="16dp"
+            android:paddingTop="8dp" android:paddingBottom="32dp">
+
+            <!-- Percentual concluído (destaque) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/dourado_container">
+                <LinearLayout
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Biblioteca concluída"
+                        android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                    <TextView
+                        android:id="@+id/tvPercentual"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/dourado_claro"
+                        android:textSize="48sp"
+                        tools:text="62%" />
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/barraConcluida"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:max="100"
+                        app:trackColor="@color/superficie" />
+                    <TextView
+                        android:id="@+id/tvConcluidosLegenda"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/texto_secundario"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Total e zerados -->
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_marginEnd="6dp" android:layout_weight="1">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:padding="16dp">
+                        <TextView
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Jogos"
+                            android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                        <TextView
+                            android:id="@+id/tvTotal"
+                            style="@style/PixelShelf.Texto.NumeroEstatistica" />
+                        <TextView
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="cadastrados"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_marginStart="6dp" android:layout_weight="1">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:padding="16dp">
+                        <TextView
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Zerados"
+                            android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                        <TextView
+                            android:id="@+id/tvZerados"
+                            style="@style/PixelShelf.Texto.NumeroEstatistica" />
+                        <TextView
+                            android:id="@+id/tvZeradosLegenda"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Platinados e média -->
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_marginEnd="6dp" android:layout_weight="1">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:padding="16dp">
+                        <LinearLayout
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="16dp" android:layout_height="16dp"
+                                android:layout_marginEnd="6dp"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_trofeu"
+                                app:tint="@color/dourado" />
+                            <TextView
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Platinados"
+                                android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvPlatinados"
+                            style="@style/PixelShelf.Texto.NumeroEstatistica" />
+                        <TextView
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="todas as conquistas"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_marginStart="6dp" android:layout_weight="1">
+                    <LinearLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:padding="16dp">
+                        <LinearLayout
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="16dp" android:layout_height="16dp"
+                                android:layout_marginEnd="6dp"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_estrela"
+                                app:tint="@color/dourado" />
+                            <TextView
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Média"
+                                android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvMedia"
+                            style="@style/PixelShelf.Texto.NumeroEstatistica" />
+                        <TextView
+                            android:id="@+id/tvMediaLegenda"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Plataforma com mais jogos + distribuição -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
+                <LinearLayout
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:padding="16dp">
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Plataforma com mais jogos"
+                        android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                    <TextView
+                        android:id="@+id/tvPlataformaLider"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/texto"
+                        android:textSize="24sp" />
+                    <TextView
+                        android:id="@+id/tvPlataformaLiderLegenda"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:textColor="@color/texto_secundario"
+                        android:textSize="13sp" />
+
+                    <View
+                        android:layout_width="match_parent" android:layout_height="1dp"
+                        android:layout_marginVertical="14dp"
+                        android:background="@color/contorno_suave" />
+
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="Jogos por plataforma"
+                        android:textAppearance="@style/PixelShelf.Texto.Secao" />
+                    <LinearLayout
+                        android:id="@+id/listaPlataformas"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -121,6 +121,9 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.ordemNome -> { viewModel.ordenacao.value = Ordenacao.NOME; item.isChecked = true; true }
                 R.id.ordemNota -> { viewModel.ordenacao.value = Ordenacao.NOTA; item.isChecked = true; true }
+                R.id.acaoEstatisticas -> {
+                    startActivity(Intent(this, EstatisticasActivity::class.java)); true
+                }
                 R.id.acaoSair -> { confirmarSaida(); true }
                 else -> false
             }

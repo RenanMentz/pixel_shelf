@@ -246,6 +246,16 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <!-- Número grande dos cards de estatísticas -->
+    <style name="PixelShelf.Texto.NumeroEstatistica" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:textSize">34sp</item>
+    </style>
+
     <!-- "Pílula" de informação (plataforma, status) -->
     <style name="PixelShelf.Pilula" parent="">
         <item name="android:layout_width">wrap_content</item>
