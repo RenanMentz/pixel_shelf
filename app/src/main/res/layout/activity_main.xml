@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+            app:title="Minha biblioteca"
+            app:subtitleTextAppearance="?attr/textAppearanceBodySmall" />
+
+        <!-- Filtro por plataforma: os chips são criados a partir das plataformas cadastradas -->
+        <HorizontalScrollView
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:padding="16dp" android:text="Minha estante"
-            android:textSize="24sp" android:textStyle="bold" />
+            android:scrollbars="none">
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipsPlataforma"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:singleSelection="true" />
+        </HorizontalScrollView>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvGames"
             android:layout_width="match_parent" android:layout_height="match_parent"
-            android:clipToPadding="false" android:paddingBottom="88dp" />
+            android:clipToPadding="false"
+            android:paddingHorizontal="8dp" android:paddingTop="4dp"
+            android:paddingBottom="88dp" />
     </LinearLayout>
 
     <TextView
@@ -20,7 +39,7 @@
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Nenhum jogo cadastrado ainda.\nToque no + para adicionar."
+        android:padding="32dp"
         android:visibility="gone" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -28,5 +47,5 @@
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_gravity="bottom|end" android:layout_margin="16dp"
         android:contentDescription="Adicionar jogo"
-        android:src="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/ic_adicionar" />
 </FrameLayout>

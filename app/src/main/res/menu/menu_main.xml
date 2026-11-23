@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/acaoBuscar"
+        android:icon="@drawable/ic_busca"
+        android:title="Pesquisar"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
+
+    <item
+        android:id="@+id/acaoOrdenar"
+        android:icon="@drawable/ic_ordenar"
+        android:title="Ordenar"
+        app:showAsAction="always">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/ordemNome" android:title="Nome (A–Z)" android:checked="true" />
+                <item android:id="@+id/ordemNota" android:title="Maior nota" />
+            </group>
+        </menu>
+    </item>
+</menu>
