@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Game::class, Conquista::class], version = 2, exportSchema = false)
+@Database(entities = [Game::class, Conquista::class, Usuario::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun conquistaDao(): ConquistaDao
+    abstract fun usuarioDao(): UsuarioDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null
@@ -19,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext, AppDatabase::class.java, "pixel_shelf.db"
-                ).addMigrations(MIGRATION_1_2).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build().also { instance = it }
             }
 
         /**
@@ -70,6 +71,24 @@ abstract class AppDatabase : RoomDatabase() {
                     """
                 )
                 db.execSQL("CREATE INDEX index_conquistas_jogoId ON conquistas(jogoId)")
+            }
+        }
+
+        /** Versão 2 -> 3: tabela de usuários (cadastro e login). Não mexe nos jogos existentes. */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE usuarios (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        nome TEXT NOT NULL,
+                        email TEXT NOT NULL,
+                        senhaHash TEXT NOT NULL,
+                        salt TEXT NOT NULL
+                    )
+                    """
+                )
+                db.execSQL("CREATE UNIQUE INDEX index_usuarios_email ON usuarios(email)")
             }
         }
     }
