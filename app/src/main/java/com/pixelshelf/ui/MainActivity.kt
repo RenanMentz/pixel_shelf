@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
@@ -14,6 +15,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayoutMediator
 import com.pixelshelf.R
+import com.pixelshelf.data.AppDatabase
+import com.pixelshelf.data.SessaoUsuario
 import com.pixelshelf.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
@@ -31,6 +34,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity onCreate")
+
+        // Sem usuário logado, volta para o login
+        val usuarioId = SessaoUsuario.idLogado(this)
+        if (usuarioId == SessaoUsuario.NENHUM) { irParaLogin(); return }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -45,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         configurarMenu()
+        carregarUsuario(usuarioId)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -110,9 +119,46 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.ordemNome -> { viewModel.ordenacao.value = Ordenacao.NOME; item.isChecked = true; true }
                 R.id.ordemNota -> { viewModel.ordenacao.value = Ordenacao.NOTA; item.isChecked = true; true }
+                R.id.acaoSair -> { confirmarSaida(); true }
                 else -> false
             }
         }
+    }
+
+    private var nomeUsuario = ""
+
+    /** Personaliza o título com o nome do usuário logado. */
+    private fun carregarUsuario(usuarioId: Int) {
+        lifecycleScope.launch {
+            val usuario = AppDatabase.get(this@MainActivity).usuarioDao().buscarPorId(usuarioId)
+            if (usuario == null) { // conta não existe mais: encerra a sessão
+                SessaoUsuario.sair(this@MainActivity)
+                irParaLogin()
+                return@launch
+            }
+            nomeUsuario = usuario.nome
+            binding.toolbar.title = "Biblioteca de ${usuario.nome.substringBefore(' ')}"
+        }
+    }
+
+    private fun confirmarSaida() {
+        AlertDialog.Builder(this)
+            .setTitle("Sair da conta")
+            .setMessage(if (nomeUsuario.isEmpty()) "Deseja sair?" else "Sair da conta de $nomeUsuario?")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Sair") { _, _ ->
+                SessaoUsuario.sair(this)
+                irParaLogin()
+            }
+            .show()
+    }
+
+    private fun irParaLogin() {
+        startActivity(
+            Intent(this, LoginActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+        finish()
     }
 
     /** Recria os chips "Todas" + uma por plataforma que existe na biblioteca. */

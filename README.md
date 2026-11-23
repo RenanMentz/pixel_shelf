@@ -13,7 +13,7 @@ lançamento, desenvolvedora, gênero, descrição e uma lista de conquistas que 
 como obtidas.
 
 ### Funcionalidades
-- Login simulado (usuário `admin`, senha `1234`)
+- **Contas de usuário**: cadastro, login por e-mail e senha, opção "Manter conectado" e sair da conta
 - **CRUD de jogos**: cadastrar, listar, editar e excluir
 - Biblioteca em grade com capas, nota e progresso de conquistas
 - **Abas por status** (Todos, Jogando, Zerado, Na fila), cada uma um `Fragment`, com a quantidade de jogos
@@ -22,6 +22,8 @@ como obtidas.
 - Jogos de exemplo carregados na primeira execução (`assets/jogos_iniciais.json`)
 
 ### Validações e regras de negócio
+- Cadastro: nome obrigatório, e-mail válido e único, senha com no mínimo 6 caracteres e confirmação igual
+- Senhas nunca são guardadas em texto: o Room guarda só o hash (PBKDF2) com salt aleatório
 - Título, plataforma e status são obrigatórios; nota entre 0 e 10; horas maiores ou iguais a 0
 - Jogo **Na fila** ainda não foi jogado, então não tem nota
 - Jogo **Zerado** precisa ter horas jogadas
@@ -30,7 +32,8 @@ como obtidas.
 ## Tecnologias utilizadas
 - Kotlin e Android Studio (Views XML + ViewBinding)
 - Activities e Fragments (`ViewPager2` + `TabLayout`)
-- Room (SQLite) com duas entidades relacionadas (`Game` e `Conquista`) e migração de banco
+- Room (SQLite) com três entidades (`Game`, `Conquista` e `Usuario`) e migrações de banco
+- `SharedPreferences` para a sessão do usuário e hash de senha com PBKDF2 (`javax.crypto`)
 - `ViewModel`, Coroutines e Flow
 - Material Components
 - Coil (carregamento das capas pela internet)
@@ -39,8 +42,9 @@ como obtidas.
 ## Estrutura do projeto
 ```
 app/src/main/java/com/pixelshelf/
-├── data/   Game, Conquista, GameDao, ConquistaDao, AppDatabase, DadosIniciais
-└── ui/     LoginActivity, MainActivity, GameFormActivity, GameDetailActivity,
+├── data/   Game, Conquista, Usuario, DAOs, AppDatabase, AuthRepository, Senhas,
+│           SessaoUsuario, DadosIniciais
+└── ui/     LoginActivity, RegisterActivity, MainActivity, GameFormActivity, GameDetailActivity,
             GameListFragment, StatusPagerAdapter, MainViewModel, adapters
 ```
 
@@ -62,7 +66,8 @@ app/src/main/java/com/pixelshelf/
    *Settings → Build Tools → Gradle → Gradle JDK*).
 3. Executar (`Run ▶`) em um emulador ou dispositivo com Android 7.0 (API 24) ou superior.
    É necessário ter internet para carregar as capas e os ícones das conquistas.
-4. Entrar com usuário `admin` e senha `1234`.
+4. Na primeira execução, toque em **Criar conta**, cadastre-se e o app entra automaticamente.
+   Nas próximas vezes, entre com e-mail e senha (ou fica conectado, se a opção estiver marcada).
 
 ## Prints das telas
 Ver a pasta [`screenshots/`](screenshots/).
