@@ -32,6 +32,8 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.9.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation("androidx.fragment:fragment-ktx:1.8.3")      // Fragments + activityViewModels()
+    implementation("androidx.viewpager2:viewpager2:1.1.0")      // abas por status
     implementation("io.coil-kt:coil:2.7.0") // carregamento das capas
 
     val room = "2.6.1"
