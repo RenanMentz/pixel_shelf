@@ -228,7 +228,8 @@ class GameFormActivity : AppCompatActivity() {
             dataLancamento = dataIso,
             desenvolvedora = binding.etDesenvolvedora.text.toString().trim().ifEmpty { null },
             genero = binding.etGenero.text.toString().trim().ifEmpty { null },
-            descricao = binding.etDescricao.text.toString().trim().ifEmpty { null }
+            descricao = binding.etDescricao.text.toString().trim().ifEmpty { null },
+            favorito = original?.favorito ?: false // a edição não mexe no favorito
         )
 
         binding.btnSalvar.isEnabled = false

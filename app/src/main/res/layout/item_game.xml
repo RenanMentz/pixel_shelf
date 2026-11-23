@@ -33,6 +33,19 @@
             app:layout_constraintHeight_percent="0.55"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- coração dos favoritos -->
+        <ImageView
+            android:id="@+id/ivFavorito"
+            android:layout_width="30dp" android:layout_height="30dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_selo_escuro"
+            android:contentDescription="Favorito"
+            android:padding="6dp"
+            android:src="@drawable/ic_favorito"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <!-- selo com a nota -->
         <TextView
             android:id="@+id/tvNota"
@@ -70,6 +83,20 @@
                 android:ellipsize="end" android:maxLines="1"
                 android:textColor="@color/texto_secundario"
                 android:textSize="12sp" />
+
+            <!-- selo de platina (todas as conquistas desbloqueadas) -->
+            <TextView
+                android:id="@+id/tvPlatina"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_platina"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="0.08"
+                android:paddingHorizontal="10dp" android:paddingVertical="3dp"
+                android:text="🏆 PLATINA"
+                android:textColor="@color/sobre_dourado"
+                android:textSize="11sp"
+                android:visibility="gone" />
 
             <!-- progresso das conquistas (some quando o jogo não tem conquistas) -->
             <LinearLayout

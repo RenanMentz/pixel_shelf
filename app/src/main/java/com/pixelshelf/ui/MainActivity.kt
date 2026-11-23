@@ -61,14 +61,16 @@ class MainActivity : AppCompatActivity() {
                 launch {
                     viewModel.biblioteca.collect { b ->
                         if (b == null) return@collect
-                        binding.toolbar.subtitle = when (b.jogos.size) {
-                            1 -> "1 jogo"
-                            else -> "${b.jogos.size} jogos"
+                        val jogos = if (b.jogos.size == 1) "1 jogo" else "${b.jogos.size} jogos"
+                        val platinas = b.jogos.count { it.platinado }
+                        binding.toolbar.subtitle = when (platinas) {
+                            0 -> jogos
+                            1 -> "$jogos • 1 platina"
+                            else -> "$jogos • $platinas platinas"
                         }
                         // Quantidade de jogos em cada aba, respeitando pesquisa e plataforma
                         StatusPagerAdapter.ABAS.forEachIndexed { i, aba ->
-                            val qtd = aba.status?.let { s -> b.jogos.count { it.game.status == s } }
-                                ?: b.jogos.size
+                            val qtd = b.jogos.count(aba::aceita)
                             binding.tabs.getTabAt(i)?.text = "${aba.titulo} ($qtd)"
                         }
                     }

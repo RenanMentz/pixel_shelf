@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/acaoFavorito"
+        android:icon="@drawable/ic_favorito_borda"
+        android:title="Favoritar"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/acaoEditar"
         android:icon="@drawable/ic_editar"
         android:title="Editar"

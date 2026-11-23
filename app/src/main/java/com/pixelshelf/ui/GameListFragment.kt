@@ -18,19 +18,20 @@ import com.pixelshelf.databinding.FragmentGameListBinding
 import kotlinx.coroutines.launch
 
 /**
- * Lista de jogos de um status (Jogando, Zerado, Na fila) ou de todos (status = null).
+ * Lista de jogos de uma aba: todos, favoritos ou um status (Jogando, Zerado, Na fila).
  *
  * Os filtros da biblioteca (pesquisa, plataforma e ordenação) ficam no MainViewModel,
- * compartilhado com a MainActivity: cada aba só aplica, por cima, o filtro do seu status.
+ * compartilhado com a MainActivity: cada aba só aplica, por cima, o filtro dela.
  */
 class GameListFragment : Fragment() {
 
     companion object {
         private const val TAG = "PixelShelf-Ciclo"
-        private const val ARG_STATUS = "status"
+        private const val ARG_ABA = "aba"
 
-        fun newInstance(status: String?) = GameListFragment().apply {
-            arguments = bundleOf(ARG_STATUS to status)
+        /** [posicao] é o índice da aba em StatusPagerAdapter.ABAS. */
+        fun newInstance(posicao: Int) = GameListFragment().apply {
+            arguments = bundleOf(ARG_ABA to posicao)
         }
     }
 
@@ -40,9 +41,10 @@ class GameListFragment : Fragment() {
     private var _binding: FragmentGameListBinding? = null
     private val binding get() = _binding!!
 
-    private val status: String? get() = arguments?.getString(ARG_STATUS)
+    private val aba: StatusPagerAdapter.Aba
+        get() = StatusPagerAdapter.ABAS[arguments?.getInt(ARG_ABA) ?: 0]
 
-    private fun log(evento: String) = Log.d(TAG, "GameListFragment[${status ?: "Todos"}] $evento")
+    private fun log(evento: String) = Log.d(TAG, "GameListFragment[${aba.titulo}] $evento")
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -81,14 +83,16 @@ class GameListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.biblioteca.collect { b ->
                     if (b == null) return@collect
-                    val lista = status?.let { s -> b.jogos.filter { it.game.status == s } } ?: b.jogos
+                    val aba = aba
+                    val lista = b.jogos.filter(aba::aceita)
                     adapter.submitList(lista)
 
                     binding.tvVazio.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
                     binding.tvVazio.text = when {
                         !b.temJogos -> "Nenhum jogo cadastrado ainda.\nToque em \"Adicionar\" para começar."
-                        status == null -> "Nenhum jogo encontrado com esses filtros."
-                        else -> "Nenhum jogo \"$status\" com os filtros atuais."
+                        aba.favoritos -> "Nenhum favorito ainda.\nAbra um jogo e toque no coração para favoritar."
+                        aba.status == null -> "Nenhum jogo encontrado com esses filtros."
+                        else -> "Nenhum jogo \"${aba.status}\" com os filtros atuais."
                     }
                 }
             }

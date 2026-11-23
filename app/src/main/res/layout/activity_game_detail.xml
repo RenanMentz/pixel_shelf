@@ -5,6 +5,7 @@
     android:background="@color/preto">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/rolagem"
         android:layout_width="match_parent" android:layout_height="match_parent">
 
         <LinearLayout
@@ -69,6 +70,19 @@
                             android:maxLines="1"
                             android:textColor="@color/dourado" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvPlatina"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_platina"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="0.08"
+                        android:paddingHorizontal="12dp" android:paddingVertical="5dp"
+                        android:text="🏆 PLATINADO"
+                        android:textColor="@color/sobre_dourado"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
 

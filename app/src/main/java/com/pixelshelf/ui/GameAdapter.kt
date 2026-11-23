@@ -3,6 +3,7 @@ package com.pixelshelf.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,15 @@ class GameAdapter(private val onClick: (GameResumo) -> Unit) :
             tvNota.visibility = if (g.nota == null) View.GONE else View.VISIBLE
             tvNota.text = "★ ${Formatos.nota(g.nota)}"
 
-            if (r.totalConquistas > 0) {
+            ivFavorito.visibility = if (g.favorito) View.VISIBLE else View.GONE
+
+            // jogo platinado ganha selo e borda dourada no card
+            tvPlatina.visibility = if (r.platinado) View.VISIBLE else View.GONE
+            val card = root
+            card.strokeColor = ContextCompat.getColor(card.context, R.color.dourado)
+            card.strokeWidth = if (r.platinado) card.resources.getDimensionPixelSize(R.dimen.borda_platina) else 0
+
+            if (r.totalConquistas > 0 && !r.platinado) {
                 grupoConquistas.visibility = View.VISIBLE
                 val pct = r.conquistasObtidas * 100 / r.totalConquistas
                 progressoConquistas.setProgressCompat(pct, false)
