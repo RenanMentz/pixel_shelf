@@ -23,6 +23,12 @@
     </item>
 
     <item
+        android:id="@+id/acaoEstatisticas"
+        android:icon="@drawable/ic_estatisticas"
+        android:title="Estatísticas"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/acaoSair"
         android:title="Sair da conta"
         app:showAsAction="never" />

@@ -16,9 +16,14 @@ como obtidas.
 - **Contas de usuário**: cadastro, login por e-mail e senha, opção "Manter conectado" e sair da conta
 - **CRUD de jogos**: cadastrar, listar, editar e excluir
 - Biblioteca em grade com capas, nota e progresso de conquistas
-- **Abas por status** (Todos, Jogando, Zerado, Na fila), cada uma um `Fragment`, com a quantidade de jogos
+- **Abas** (Todos, Favoritos, Jogando, Zerado, Na fila), cada uma um `Fragment`, com a quantidade de jogos
 - Pesquisa por nome, filtro por plataforma e ordenação (nome ou maior nota)
 - Conquistas por jogo, com barra de progresso
+- **Platina**: ao desbloquear todas as conquistas de um jogo ele ganha o selo de platina
+  (destaque dourado na biblioteca e no detalhe, com mensagem de parabéns)
+- **Favoritos**: marcar/desmarcar jogos favoritos pelo coração na tela de detalhes
+- **Estatísticas pessoais**: total de jogos, zerados, platinados, média das notas, plataforma
+  com mais jogos (com gráfico de jogos por plataforma) e percentual da biblioteca concluída
 - Jogos de exemplo carregados na primeira execução (`assets/jogos_iniciais.json`)
 
 ### Validações e regras de negócio
@@ -28,11 +33,16 @@ como obtidas.
 - Jogo **Na fila** ainda não foi jogado, então não tem nota
 - Jogo **Zerado** precisa ter horas jogadas
 - Não é possível cadastrar o mesmo jogo duas vezes na mesma plataforma
+- Platina = todas as conquistas obtidas (jogo sem conquistas não tem platina); é calculada, não
+  fica gravada no banco
+- Estatísticas: a média das notas ignora jogos sem nota (Na fila) e um jogo conta como
+  concluído quando está Zerado ou platinado; empates na plataforma com mais jogos aparecem juntos
 
 ## Tecnologias utilizadas
 - Kotlin e Android Studio (Views XML + ViewBinding)
 - Activities e Fragments (`ViewPager2` + `TabLayout`)
-- Room (SQLite) com três entidades (`Game`, `Conquista` e `Usuario`) e migrações de banco
+- Room (SQLite) com três entidades (`Game`, `Conquista` e `Usuario`), banco na versão 4 com
+  migrações entre todas as versões (sem perder dados ao atualizar o app)
 - `SharedPreferences` para a sessão do usuário e hash de senha com PBKDF2 (`javax.crypto`)
 - `ViewModel`, Coroutines e Flow
 - Material Components
@@ -42,11 +52,21 @@ como obtidas.
 ## Estrutura do projeto
 ```
 app/src/main/java/com/pixelshelf/
-├── data/   Game, Conquista, Usuario, DAOs, AppDatabase, AuthRepository, Senhas,
-│           SessaoUsuario, DadosIniciais
+├── data/   Game, Conquista, Usuario, Estatisticas, DAOs, AppDatabase, AuthRepository,
+│           Senhas, SessaoUsuario, DadosIniciais
 └── ui/     LoginActivity, RegisterActivity, MainActivity, GameFormActivity, GameDetailActivity,
-            GameListFragment, StatusPagerAdapter, MainViewModel, adapters
+            EstatisticasActivity, GameListFragment, StatusPagerAdapter, MainViewModel, adapters
 ```
+
+### Telas (Activities)
+| Activity | Função |
+|---|---|
+| `LoginActivity` | Entrada no app (e-mail e senha, "Manter conectado") |
+| `RegisterActivity` | Cadastro de conta |
+| `MainActivity` | Biblioteca com abas (`GameListFragment`), pesquisa, filtro e ordenação |
+| `GameFormActivity` | Cadastro e edição de jogo, com validações |
+| `GameDetailActivity` | Detalhes, conquistas, platina, favorito e exclusão |
+| `EstatisticasActivity` | Estatísticas pessoais da biblioteca |
 
 ## Ciclo de vida dos componentes
 - `MainActivity` e `GameListFragment` registram no Logcat cada callback do ciclo de vida
@@ -70,4 +90,16 @@ app/src/main/java/com/pixelshelf/
    Nas próximas vezes, entre com e-mail e senha (ou fica conectado, se a opção estiver marcada).
 
 ## Prints das telas
-Ver a pasta [`screenshots/`](screenshots/).
+Os arquivos estão na pasta [`screenshots/`](screenshots/).
+
+| Login | Cadastro | Biblioteca |
+|---|---|---|
+| <img src="screenshots/login.png" width="230"> | <img src="screenshots/cadastro.png" width="230"> | <img src="screenshots/biblioteca.png" width="230"> |
+
+| Favoritos | Detalhes e platina | Edição de jogo |
+|---|---|---|
+| <img src="screenshots/favoritos.png" width="230"> | <img src="screenshots/detalhe.png" width="230"> | <img src="screenshots/formulario.png" width="230"> |
+
+| Estatísticas |
+|---|
+| <img src="screenshots/estatisticas.png" width="230"> |
