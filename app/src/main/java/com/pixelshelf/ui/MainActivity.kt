@@ -2,6 +2,7 @@ package com.pixelshelf.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
@@ -10,32 +11,34 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
+import com.google.android.material.tabs.TabLayoutMediator
 import com.pixelshelf.R
 import com.pixelshelf.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
-/** Biblioteca de jogos: listagem com capa, pesquisa, filtro por plataforma e ordenação. */
+/**
+ * Biblioteca de jogos: pesquisa, filtro por plataforma e ordenação (na toolbar/chips)
+ * e uma aba por status (Todos, Jogando, Zerado, Na fila), cada uma um GameListFragment.
+ */
 class MainActivity : AppCompatActivity() {
+
+    private companion object { const val TAG = "PixelShelf-Ciclo" }
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "MainActivity onCreate")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = GameAdapter { resumo ->
-            startActivity(
-                Intent(this, GameDetailActivity::class.java)
-                    .putExtra(GameDetailActivity.EXTRA_GAME_ID, resumo.game.id)
-            )
-        }
-        val colunas = if (resources.configuration.screenWidthDp >= 600) 4 else 2
-        binding.rvGames.layoutManager = GridLayoutManager(this, colunas)
-        binding.rvGames.adapter = adapter
+        // Abas por status: ViewPager2 + TabLayout, cada página é um Fragment
+        binding.pager.adapter = StatusPagerAdapter(this)
+        TabLayoutMediator(binding.tabs, binding.pager) { tab, posicao ->
+            tab.text = StatusPagerAdapter.ABAS[posicao].titulo
+        }.attach()
 
         binding.fabAdd.setOnClickListener {
             startActivity(Intent(this, GameFormActivity::class.java))
@@ -49,21 +52,27 @@ class MainActivity : AppCompatActivity() {
                 launch {
                     viewModel.biblioteca.collect { b ->
                         if (b == null) return@collect
-                        adapter.submitList(b.jogos)
                         binding.toolbar.subtitle = when (b.jogos.size) {
                             1 -> "1 jogo"
                             else -> "${b.jogos.size} jogos"
                         }
-                        binding.tvVazio.visibility = if (b.jogos.isEmpty()) View.VISIBLE else View.GONE
-                        binding.tvVazio.text = if (b.temJogos)
-                            "Nenhum jogo encontrado com esses filtros."
-                        else
-                            "Nenhum jogo cadastrado ainda.\nToque no + para adicionar."
+                        // Quantidade de jogos em cada aba, respeitando pesquisa e plataforma
+                        StatusPagerAdapter.ABAS.forEachIndexed { i, aba ->
+                            val qtd = aba.status?.let { s -> b.jogos.count { it.game.status == s } }
+                                ?: b.jogos.size
+                            binding.tabs.getTabAt(i)?.text = "${aba.titulo} ($qtd)"
+                        }
                     }
                 }
             }
         }
     }
+
+    override fun onStart() { super.onStart(); Log.d(TAG, "MainActivity onStart") }
+    override fun onResume() { super.onResume(); Log.d(TAG, "MainActivity onResume") }
+    override fun onPause() { Log.d(TAG, "MainActivity onPause"); super.onPause() }
+    override fun onStop() { Log.d(TAG, "MainActivity onStop"); super.onStop() }
+    override fun onDestroy() { Log.d(TAG, "MainActivity onDestroy"); super.onDestroy() }
 
     private fun configurarMenu() {
         val toolbar = binding.toolbar
