@@ -1,3 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.PixelShelf" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <!-- Tema escuro fixo: fundo preto e destaques em dourado -->
+    <style name="Theme.PixelShelf" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- cores principais -->
+        <item name="colorPrimary">@color/dourado</item>
+        <item name="colorOnPrimary">@color/sobre_dourado</item>
+        <item name="colorPrimaryContainer">@color/dourado_container</item>
+        <item name="colorOnPrimaryContainer">@color/dourado_claro</item>
+        <item name="colorSecondary">@color/dourado_claro</item>
+        <item name="colorOnSecondary">@color/sobre_dourado</item>
+        <item name="colorSecondaryContainer">@color/dourado_container</item>
+        <item name="colorOnSecondaryContainer">@color/dourado_claro</item>
+        <item name="colorTertiary">@color/dourado_escuro</item>
+        <item name="colorAccent">@color/dourado</item>
+        <item name="android:colorAccent">@color/dourado</item>
+        <item name="colorError">@color/erro</item>
+
+        <!-- superfícies -->
+        <item name="android:colorBackground">@color/preto</item>
+        <item name="colorSurface">@color/preto</item>
+        <item name="colorSurfaceContainerLowest">@color/preto</item>
+        <item name="colorSurfaceContainerLow">@color/superficie</item>
+        <item name="colorSurfaceContainer">@color/superficie_1</item>
+        <item name="colorSurfaceContainerHigh">@color/superficie_2</item>
+        <item name="colorSurfaceContainerHighest">@color/superficie_3</item>
+        <item name="colorSurfaceVariant">@color/superficie_2</item>
+        <item name="colorOnBackground">@color/texto</item>
+        <item name="colorOnSurface">@color/texto</item>
+        <item name="colorOnSurfaceVariant">@color/texto_secundario</item>
+        <item name="colorOutline">@color/contorno</item>
+        <item name="colorOutlineVariant">@color/contorno_suave</item>
+        <item name="android:textColorPrimary">@color/texto</item>
+        <item name="android:textColorSecondary">@color/texto_secundario</item>
+
+        <!-- janela / barras do sistema -->
+        <item name="android:windowBackground">@color/preto</item>
+        <item name="android:statusBarColor">@color/preto</item>
+        <item name="android:navigationBarColor">@color/preto</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- estilos padrão dos componentes -->
+        <item name="toolbarStyle">@style/PixelShelf.Toolbar</item>
+        <item name="materialButtonStyle">@style/PixelShelf.Botao</item>
+        <item name="materialButtonOutlinedStyle">@style/PixelShelf.Botao.Contorno</item>
+        <item name="borderlessButtonStyle">@style/PixelShelf.Botao.Texto</item>
+        <item name="materialCardViewStyle">@style/PixelShelf.Card</item>
+        <item name="textInputStyle">@style/PixelShelf.Campo</item>
+        <item name="chipStyle">@style/PixelShelf.Chip</item>
+        <item name="tabStyle">@style/PixelShelf.Abas</item>
+        <item name="extendedFloatingActionButtonStyle">@style/PixelShelf.FabEstendido</item>
+        <item name="floatingActionButtonStyle">@style/PixelShelf.Fab</item>
+        <item name="linearProgressIndicatorStyle">@style/PixelShelf.Progresso</item>
+        <item name="materialAlertDialogTheme">@style/PixelShelf.Dialogo</item>
+        <item name="alertDialogTheme">@style/PixelShelf.Dialogo</item>
+        <item name="android:datePickerDialogTheme">@style/PixelShelf.DialogoData</item>
+    </style>
+
+    <!-- Toolbar -->
+    <style name="PixelShelf.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/preto</item>
+        <item name="titleTextAppearance">@style/PixelShelf.Texto.TituloToolbar</item>
+        <item name="subtitleTextAppearance">@style/PixelShelf.Texto.SubtituloToolbar</item>
+        <item name="titleTextColor">@color/texto</item>
+        <item name="subtitleTextColor">@color/texto_secundario</item>
+    </style>
+
+    <style name="PixelShelf.Texto.TituloToolbar" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="PixelShelf.Texto.SubtituloToolbar" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/dourado</item>
+    </style>
+
+    <!-- Botões -->
+    <style name="PixelShelf.Botao" parent="Widget.Material3.Button">
+        <item name="android:minHeight">56dp</item>
+        <item name="cornerRadius">16dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="PixelShelf.Botao.Contorno" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:minHeight">48dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="strokeColor">@color/dourado_escuro</item>
+        <item name="android:textColor">@color/dourado</item>
+        <item name="iconTint">@color/dourado</item>
+    </style>
+
+    <style name="PixelShelf.Botao.Texto" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/dourado</item>
+    </style>
+
+    <!-- Cards -->
+    <style name="PixelShelf.Card" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/superficie_1</item>
+        <item name="cardCornerRadius">18dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+
+    <!-- Campos de texto -->
+    <style name="PixelShelf.Campo" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxBackgroundColor">@color/superficie_1</item>
+        <item name="boxStrokeColor">@color/borda_campo</item>
+        <item name="hintTextColor">@color/dourado</item>
+        <item name="endIconTint">@color/texto_secundario</item>
+        <item name="counterTextColor">@color/texto_secundario</item>
+    </style>
+
+    <style name="PixelShelf.Campo.Lista" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="boxBackgroundColor">@color/superficie_1</item>
+        <item name="boxStrokeColor">@color/borda_campo</item>
+        <item name="hintTextColor">@color/dourado</item>
+        <item name="endIconTint">@color/dourado</item>
+    </style>
+
+    <!-- Chips de filtro (plataformas) -->
+    <style name="PixelShelf.Chip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/fundo_chip</item>
+        <item name="android:textColor">@color/texto_chip</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="chipMinHeight">36dp</item>
+        <item name="shapeAppearance">@style/PixelShelf.Forma.Pilula</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Abas -->
+    <style name="PixelShelf.Abas" parent="Widget.Material3.TabLayout">
+        <item name="android:background">@color/preto</item>
+        <item name="tabIndicator">@drawable/indicador_aba</item>
+        <item name="tabIndicatorColor">@color/dourado</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabSelectedTextColor">@color/dourado</item>
+        <item name="tabTextColor">@color/texto_secundario</item>
+        <item name="tabRippleColor">@color/dourado_container</item>
+        <item name="tabTextAppearance">@style/PixelShelf.Texto.Aba</item>
+    </style>
+
+    <style name="PixelShelf.Texto.Aba" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- FABs -->
+    <style name="PixelShelf.FabEstendido" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
+        <item name="backgroundTint">@color/dourado</item>
+        <item name="iconTint">@color/sobre_dourado</item>
+        <item name="android:textColor">@color/sobre_dourado</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="shapeAppearanceOverlay">@style/PixelShelf.Forma.Fab</item>
+    </style>
+
+    <style name="PixelShelf.Fab" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">@color/dourado</item>
+        <item name="tint">@color/sobre_dourado</item>
+        <item name="shapeAppearanceOverlay">@style/PixelShelf.Forma.Fab</item>
+    </style>
+
+    <!-- Barra de progresso -->
+    <style name="PixelShelf.Progresso" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="indicatorColor">@color/dourado</item>
+        <item name="trackColor">@color/superficie_3</item>
+        <item name="trackThickness">8dp</item>
+        <item name="trackCornerRadius">4dp</item>
+        <item name="indicatorTrackGapSize">0dp</item>
+        <item name="trackStopIndicatorSize">0dp</item>
+    </style>
+
+    <!-- Diálogos -->
+    <style name="PixelShelf.Dialogo" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorPrimary">@color/dourado</item>
+        <item name="colorSurface">@color/superficie_2</item>
+        <item name="colorSurfaceContainerHigh">@color/superficie_2</item>
+        <item name="shapeAppearanceOverlay">@style/PixelShelf.Forma.Dialogo</item>
+    </style>
+
+    <style name="PixelShelf.DialogoData" parent="android:Theme.Material.Dialog">
+        <item name="android:colorAccent">@color/dourado</item>
+        <item name="android:colorBackground">@color/superficie_2</item>
+        <item name="android:windowBackground">@color/superficie_2</item>
+    </style>
+
+    <!-- Formas -->
+    <style name="PixelShelf.Forma.Pilula" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="PixelShelf.Forma.Fab" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+
+    <style name="PixelShelf.Forma.Dialogo" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="PixelShelf.Forma.Capa" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">14dp</item>
+    </style>
+
+    <style name="PixelShelf.Forma.Icone" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <!-- Textos reutilizados -->
+    <style name="PixelShelf.Texto.Secao" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="PixelShelf.Texto.Rotulo" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textColor">@color/dourado</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- "Pílula" de informação (plataforma, status) -->
+    <style name="PixelShelf.Pilula" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_pilula</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
 </resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fundo do login/cadastro: preto com um brilho dourado suave no topo -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape><solid android:color="@color/preto" /></shape>
+    </item>
+    <item>
+        <shape>
+            <gradient
+                android:type="radial"
+                android:centerX="0.5" android:centerY="0.0"
+                android:gradientRadius="420dp"
+                android:startColor="#40F2C14E"
+                android:centerColor="#14F2C14E"
+                android:endColor="#000A0A0B" />
+        </shape>
+    </item>
+</layer-list>

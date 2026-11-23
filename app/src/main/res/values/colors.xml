@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paleta do Pixel Shelf: preto como cor principal e dourado como destaque -->
+<resources>
+    <!-- Pretos / superfícies (do mais escuro ao mais claro) -->
+    <color name="preto">#FF0A0A0B</color>
+    <color name="superficie">#FF111113</color>
+    <color name="superficie_1">#FF18181B</color>
+    <color name="superficie_2">#FF202024</color>
+    <color name="superficie_3">#FF2A2A2F</color>
+
+    <!-- Dourados -->
+    <color name="dourado">#FFF2C14E</color>
+    <color name="dourado_claro">#FFFFDB82</color>
+    <color name="dourado_escuro">#FFC9971C</color>
+    <color name="dourado_container">#FF3A2E0C</color>
+    <color name="sobre_dourado">#FF1E1600</color>
+
+    <!-- Textos e contornos -->
+    <color name="texto">#FFF4F1EA</color>
+    <color name="texto_secundario">#FFA39E93</color>
+    <color name="contorno">#FF3D3B35</color>
+    <color name="contorno_suave">#FF29282A</color>
+    <color name="erro">#FFFF6B5E</color>
+
+    <!-- Sombras para degradês sobre as capas -->
+    <color name="sombra_forte">#F00A0A0B</color>
+    <color name="sombra_media">#800A0A0B</color>
+    <color name="transparente">#000A0A0B</color>
+</resources>

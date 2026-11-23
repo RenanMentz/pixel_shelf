@@ -2,18 +2,36 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg_tela_entrada"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:gravity="center" android:orientation="vertical" android:padding="32dp">
+        android:gravity="center" android:orientation="vertical"
+        android:paddingHorizontal="28dp" android:paddingVertical="40dp">
+
+        <FrameLayout
+            android:layout_width="64dp" android:layout_height="64dp"
+            android:background="@drawable/bg_logo"
+            android:elevation="8dp">
+            <ImageView
+                android:layout_width="36dp" android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_controle" />
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Criar conta" android:textSize="28sp" android:textStyle="bold" />
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-black"
+            android:text="Criar conta"
+            android:textColor="@color/texto" android:textSize="28sp" />
         <TextView
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp" android:text="Comece a montar sua biblioteca" />
+            android:layout_marginTop="4dp" android:layout_marginBottom="28dp"
+            android:text="Comece a montar sua biblioteca"
+            android:textColor="@color/texto_secundario" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilNome"
@@ -60,11 +78,11 @@
         <Button
             android:id="@+id/btnCriarConta"
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="24dp" android:text="Criar conta" />
+            android:layout_marginTop="28dp" android:text="Criar conta" />
 
         <Button
             android:id="@+id/btnJaTenhoConta"
-            style="@style/Widget.Material3.Button.TextButton"
+            style="@style/PixelShelf.Botao.Texto"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="8dp" android:text="Já tenho conta" />
     </LinearLayout>
