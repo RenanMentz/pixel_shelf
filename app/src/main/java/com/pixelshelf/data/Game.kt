@@ -1,5 +1,6 @@
 package com.pixelshelf.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -15,7 +16,9 @@ data class Game(
     val dataLancamento: String? = null, // formato ISO: yyyy-MM-dd
     val desenvolvedora: String? = null,
     val genero: String? = null,
-    val descricao: String? = null
+    val descricao: String? = null,
+    @ColumnInfo(defaultValue = "0")
+    val favorito: Boolean = false
 )
 
 object GameStatus {
@@ -37,4 +40,7 @@ data class GameResumo(
     @androidx.room.Embedded val game: Game,
     val totalConquistas: Int,
     val conquistasObtidas: Int
-)
+) {
+    /** Platina = todas as conquistas do jogo desbloqueadas (calculado, não fica no banco). */
+    val platinado: Boolean get() = totalConquistas > 0 && conquistasObtidas == totalConquistas
+}

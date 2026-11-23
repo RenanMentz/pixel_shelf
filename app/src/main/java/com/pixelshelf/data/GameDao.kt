@@ -40,6 +40,9 @@ interface GameDao {
     @Query("SELECT COUNT(*) FROM games")
     suspend fun contar(): Int
 
+    @Query("UPDATE games SET favorito = :favorito WHERE id = :id")
+    suspend fun definirFavorito(id: Int, favorito: Boolean)
+
     @Insert suspend fun inserir(game: Game): Long
     @Update suspend fun atualizar(game: Game)
     @Delete suspend fun excluir(game: Game)

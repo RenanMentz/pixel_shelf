@@ -8,11 +8,15 @@ import android.os.Bundle
 import android.view.View
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.google.android.material.snackbar.Snackbar
 import com.pixelshelf.R
 import com.pixelshelf.data.AppDatabase
 import com.pixelshelf.data.Conquista
@@ -27,6 +31,7 @@ class GameDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameDetailBinding
     private var game: Game? = null
     private var excluindo = false
+    private var platinadoAntes: Boolean? = null // null = ainda não carregou as conquistas
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +46,14 @@ class GameDetailActivity : AppCompatActivity() {
             binding.ivFundo.setRenderEffect(RenderEffect.createBlurEffect(40f, 40f, Shader.TileMode.CLAMP))
         }
 
+        // a toolbar começa transparente sobre a capa e vai ficando preta conforme a tela rola
+        val preto = ContextCompat.getColor(this, R.color.preto)
+        val limite = resources.displayMetrics.density * 180
+        binding.rolagem.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, y, _, _ ->
+            val alfa = (y / limite).coerceIn(0f, 1f)
+            binding.toolbar.setBackgroundColor(ColorUtils.setAlphaComponent(preto, (alfa * 255).toInt()))
+        })
+
         binding.toolbar.setNavigationOnClickListener { finish() }
         binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -52,6 +65,7 @@ class GameDetailActivity : AppCompatActivity() {
                     true
                 }
                 R.id.acaoExcluir -> { confirmarExclusao(); true }
+                R.id.acaoFavorito -> { alternarFavorito(); true }
                 else -> false
             }
         }
@@ -91,6 +105,10 @@ class GameDetailActivity : AppCompatActivity() {
             }
             ivFundo.load(g.capaUrl) { crossfade(true) }
             tvTitulo.text = g.titulo
+            toolbar.menu.findItem(R.id.acaoFavorito)?.apply {
+                setIcon(if (g.favorito) R.drawable.ic_favorito else R.drawable.ic_favorito_borda)
+                title = if (g.favorito) "Remover dos favoritos" else "Favoritar"
+            }
             tvPlataforma.text = g.plataforma
             tvStatus.text = g.status
             tvNota.text = if (g.nota == null) "—" else "★ ${Formatos.nota(g.nota)}"
@@ -115,9 +133,32 @@ class GameDetailActivity : AppCompatActivity() {
         if (lista.isEmpty()) return
         val obtidas = lista.count { it.obtida }
         val pct = obtidas * 100 / lista.size
-        binding.tvProgressoConquistas.text =
-            "$obtidas de ${lista.size} desbloqueadas ($pct%)" + if (pct == 100) " 🏆" else ""
+        val platinado = obtidas == lista.size
+        // o texto sempre ocupa uma linha, assim a lista não "pula" ao marcar/desmarcar
+        binding.tvProgressoConquistas.text = if (platinado)
+            "🏆 Platina conquistada! $obtidas de ${lista.size} (100%)"
+        else "$obtidas de ${lista.size} desbloqueadas ($pct%)"
+        binding.tvProgressoConquistas.setTextColor(
+            ContextCompat.getColor(this, if (platinado) R.color.dourado else R.color.texto_secundario)
+        )
         binding.progressoConquistas.setProgressCompat(pct, true)
+        binding.tvPlatina.visibility = if (platinado) View.VISIBLE else View.GONE
+
+        // comemora só quando a platina acontece agora (não ao abrir um jogo já platinado)
+        if (platinadoAntes == false && platinado) {
+            Snackbar.make(binding.root, "🏆 Parabéns! Você platinou ${game?.titulo ?: "o jogo"}!", Snackbar.LENGTH_LONG).show()
+        }
+        platinadoAntes = platinado
+    }
+
+    private fun alternarFavorito() {
+        val g = game ?: return
+        val agora = !g.favorito
+        lifecycleScope.launch {
+            AppDatabase.get(this@GameDetailActivity).gameDao().definirFavorito(g.id, agora)
+            val msg = if (agora) "Adicionado aos favoritos" else "Removido dos favoritos"
+            Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun confirmarExclusao() {

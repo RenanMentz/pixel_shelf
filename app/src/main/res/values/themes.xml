@@ -31,6 +31,9 @@
         <item name="colorOnSurfaceVariant">@color/texto_secundario</item>
         <item name="colorOutline">@color/contorno</item>
         <item name="colorOutlineVariant">@color/contorno_suave</item>
+        <item name="colorSurfaceInverse">@color/superficie_3</item>
+        <item name="colorOnSurfaceInverse">@color/texto</item>
+        <item name="colorPrimaryInverse">@color/dourado</item>
         <item name="android:textColorPrimary">@color/texto</item>
         <item name="android:textColorSecondary">@color/texto_secundario</item>
 

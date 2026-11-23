@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Game::class, Conquista::class, Usuario::class], version = 3, exportSchema = false)
+@Database(entities = [Game::class, Conquista::class, Usuario::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun conquistaDao(): ConquistaDao
@@ -20,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext, AppDatabase::class.java, "pixel_shelf.db"
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build().also { instance = it }
             }
 
         /**
@@ -89,6 +89,13 @@ abstract class AppDatabase : RoomDatabase() {
                     """
                 )
                 db.execSQL("CREATE UNIQUE INDEX index_usuarios_email ON usuarios(email)")
+            }
+        }
+
+        /** Versão 3 -> 4: marcação de jogo favorito. Jogos existentes começam como não favoritos. */
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE games ADD COLUMN favorito INTEGER NOT NULL DEFAULT 0")
             }
         }
     }
