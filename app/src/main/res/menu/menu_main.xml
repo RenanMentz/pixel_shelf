@@ -21,4 +21,9 @@
             </group>
         </menu>
     </item>
+
+    <item
+        android:id="@+id/acaoSair"
+        android:title="Sair da conta"
+        app:showAsAction="never" />
 </menu>

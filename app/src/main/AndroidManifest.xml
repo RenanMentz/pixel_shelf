@@ -15,6 +15,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.RegisterActivity" android:exported="false"
+            android:parentActivityName=".ui.LoginActivity" />
         <activity android:name=".ui.MainActivity" android:exported="false" />
         <activity android:name=".ui.GameFormActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
