@@ -6,14 +6,17 @@
         android:id="@+id/rvGames"
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingHorizontal="8dp" android:paddingTop="4dp"
-        android:paddingBottom="88dp" />
+        android:paddingHorizontal="10dp" android:paddingTop="10dp"
+        android:paddingBottom="96dp" />
 
     <TextView
         android:id="@+id/tvVazio"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:drawablePadding="12dp"
         android:gravity="center"
+        android:lineSpacingExtra="4dp"
         android:padding="32dp"
+        android:textColor="@color/texto_secundario"
         android:visibility="gone" />
 </FrameLayout>

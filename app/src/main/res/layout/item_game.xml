@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Card da biblioteca: capa ocupando o card inteiro, texto sobre um degradê
+     e selo dourado com a nota no canto -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    android:clickable="true" android:focusable="true">
+    android:clickable="true" android:focusable="true"
+    app:rippleColor="@color/dourado_container">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -13,6 +16,7 @@
         <ImageView
             android:id="@+id/ivCapa"
             android:layout_width="0dp" android:layout_height="0dp"
+            android:background="@color/superficie_2"
             android:contentDescription="Capa do jogo"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="2:3"
@@ -20,32 +24,77 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- degradê na metade de baixo da capa -->
+        <View
+            android:layout_width="0dp" android:layout_height="0dp"
+            android:background="@drawable/degrade_capa"
+            app:layout_constraintBottom_toBottomOf="@id/ivCapa"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.55"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- selo com a nota -->
+        <TextView
+            android:id="@+id/tvNota"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_selo_nota"
+            android:fontFamily="sans-serif-black"
+            android:paddingHorizontal="9dp" android:paddingVertical="3dp"
+            android:textColor="@color/sobre_dourado"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="10dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="12dp" android:paddingBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivCapa"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivCapa">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/tvTitulo"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:ellipsize="end" android:maxLines="2"
-                android:textAppearance="?attr/textAppearanceTitleSmall" />
+                android:fontFamily="sans-serif-black"
+                android:shadowColor="#99000000" android:shadowRadius="6"
+                android:textColor="@color/texto"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tvPlataformaStatus"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:ellipsize="end" android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceBodySmall" />
+                android:textColor="@color/texto_secundario"
+                android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/tvNotaConquistas"
+            <!-- progresso das conquistas (some quando o jogo não tem conquistas) -->
+            <LinearLayout
+                android:id="@+id/grupoConquistas"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceLabelMedium" />
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progressoConquistas"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="100"
+                    app:trackThickness="4dp"
+                    app:trackCornerRadius="2dp" />
+
+                <TextView
+                    android:id="@+id/tvConquistas"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/dourado"
+                    android:textSize="11sp" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

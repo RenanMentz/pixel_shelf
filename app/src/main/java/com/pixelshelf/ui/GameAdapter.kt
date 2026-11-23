@@ -1,6 +1,7 @@
 package com.pixelshelf.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -29,9 +30,19 @@ class GameAdapter(private val onClick: (GameResumo) -> Unit) :
             }
             tvTitulo.text = g.titulo
             tvPlataformaStatus.text = "${g.plataforma} • ${g.status}"
-            val nota = "★ ${Formatos.nota(g.nota)}"
-            tvNotaConquistas.text = if (r.totalConquistas > 0)
-                "$nota   🏆 ${r.conquistasObtidas}/${r.totalConquistas}" else nota
+
+            // selo da nota só aparece quando o jogo tem nota
+            tvNota.visibility = if (g.nota == null) View.GONE else View.VISIBLE
+            tvNota.text = "★ ${Formatos.nota(g.nota)}"
+
+            if (r.totalConquistas > 0) {
+                grupoConquistas.visibility = View.VISIBLE
+                val pct = r.conquistasObtidas * 100 / r.totalConquistas
+                progressoConquistas.setProgressCompat(pct, false)
+                tvConquistas.text = "🏆 ${r.conquistasObtidas}/${r.totalConquistas}"
+            } else {
+                grupoConquistas.visibility = View.GONE
+            }
             root.setOnClickListener { onClick(r) }
         }
     }

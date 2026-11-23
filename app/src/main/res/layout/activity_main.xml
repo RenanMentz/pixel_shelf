@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/preto">
 
     <LinearLayout
         android:layout_width="match_parent" android:layout_height="match_parent"
@@ -9,18 +10,20 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-            app:title="Minha biblioteca"
-            app:subtitleTextAppearance="?attr/textAppearanceBodySmall" />
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:minHeight="64dp"
+            app:title="Minha biblioteca" />
 
         <!-- Filtro por plataforma: os chips são criados a partir das plataformas cadastradas -->
         <HorizontalScrollView
             android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingHorizontal="12dp"
             android:scrollbars="none">
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipsPlataforma"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:paddingHorizontal="12dp"
+                app:chipSpacingHorizontal="8dp"
                 app:selectionRequired="true"
                 app:singleLine="true"
                 app:singleSelection="true" />
@@ -30,8 +33,13 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             app:tabGravity="fill"
             app:tabMode="fixed" />
+
+        <View
+            android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/contorno_suave" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager"
@@ -39,10 +47,11 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end" android:layout_margin="16dp"
+        android:layout_gravity="bottom|end" android:layout_margin="20dp"
         android:contentDescription="Adicionar jogo"
-        app:srcCompat="@drawable/ic_adicionar" />
+        android:text="Adicionar"
+        app:icon="@drawable/ic_adicionar" />
 </FrameLayout>

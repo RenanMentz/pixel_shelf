@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun confirmarSaida() {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Sair da conta")
             .setMessage(if (nomeUsuario.isEmpty()) "Deseja sair?" else "Sair da conta de $nomeUsuario?")
             .setNegativeButton("Cancelar", null)

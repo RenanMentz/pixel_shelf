@@ -86,7 +86,7 @@ class GameListFragment : Fragment() {
 
                     binding.tvVazio.visibility = if (lista.isEmpty()) View.VISIBLE else View.GONE
                     binding.tvVazio.text = when {
-                        !b.temJogos -> "Nenhum jogo cadastrado ainda.\nToque no + para adicionar."
+                        !b.temJogos -> "Nenhum jogo cadastrado ainda.\nToque em \"Adicionar\" para começar."
                         status == null -> "Nenhum jogo encontrado com esses filtros."
                         else -> "Nenhum jogo \"$status\" com os filtros atuais."
                     }

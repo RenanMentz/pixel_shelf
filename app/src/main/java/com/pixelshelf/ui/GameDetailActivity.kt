@@ -1,9 +1,12 @@
 package com.pixelshelf.ui
 
 import android.content.Intent
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +35,11 @@ class GameDetailActivity : AppCompatActivity() {
 
         val db = AppDatabase.get(this)
         val id = intent.getIntExtra(EXTRA_GAME_ID, -1)
+
+        // fundo do cabeçalho desfocado (RenderEffect só existe a partir do Android 12)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            binding.ivFundo.setRenderEffect(RenderEffect.createBlurEffect(40f, 40f, Shader.TileMode.CLAMP))
+        }
 
         binding.toolbar.setNavigationOnClickListener { finish() }
         binding.toolbar.setOnMenuItemClickListener { item ->
@@ -81,11 +89,12 @@ class GameDetailActivity : AppCompatActivity() {
                 placeholder(R.drawable.ic_capa_placeholder)
                 error(R.drawable.ic_capa_placeholder)
             }
+            ivFundo.load(g.capaUrl) { crossfade(true) }
             tvTitulo.text = g.titulo
             tvPlataforma.text = g.plataforma
             tvStatus.text = g.status
-            tvNota.text = "★ ${Formatos.nota(g.nota)}"
-            tvHoras.text = "${Formatos.numero(g.horasJogadas)} h jogadas"
+            tvNota.text = if (g.nota == null) "—" else "★ ${Formatos.nota(g.nota)}"
+            tvHoras.text = "${Formatos.numero(g.horasJogadas)} h"
 
             val info = listOfNotNull(
                 Formatos.data(g.dataLancamento)?.let { "Lançamento: $it" },
@@ -96,6 +105,8 @@ class GameDetailActivity : AppCompatActivity() {
             tvInfo.visibility = if (info.isEmpty()) View.GONE else View.VISIBLE
             tvDescricao.text = g.descricao
             tvDescricao.visibility = if (g.descricao.isNullOrBlank()) View.GONE else View.VISIBLE
+            secaoSobre.visibility =
+                if (info.isEmpty() && g.descricao.isNullOrBlank()) View.GONE else View.VISIBLE
         }
     }
 
@@ -111,7 +122,7 @@ class GameDetailActivity : AppCompatActivity() {
 
     private fun confirmarExclusao() {
         val g = game ?: return
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Excluir jogo")
             .setMessage("Remover \"${g.titulo}\" da biblioteca? As conquistas dele também serão apagadas.")
             .setNegativeButton("Cancelar", null)

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Funde a capa de fundo do detalhe com o preto da tela -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient android:angle="90"
+        android:startColor="@color/preto"
+        android:centerColor="@color/sombra_media"
+        android:endColor="@color/sombra_media" />
+</shape>

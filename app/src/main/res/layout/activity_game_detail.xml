@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-        app:navigationContentDescription="Voltar"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:menu="@menu/menu_detalhe" />
+    android:background="@color/preto">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent" android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="16dp">
+            android:orientation="vertical">
 
+            <!-- Cabeçalho: capa ampliada e desfocada como fundo -->
+            <FrameLayout
+                android:layout_width="match_parent" android:layout_height="260dp">
+                <ImageView
+                    android:id="@+id/ivFundo"
+                    android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:alpha="0.55"
+                    android:importantForAccessibility="no"
+                    android:scaleType="centerCrop" />
+                <View
+                    android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:background="@drawable/degrade_fundo_detalhe" />
+            </FrameLayout>
+
+            <!-- Capa + dados principais (sobe por cima do fundo) -->
             <LinearLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="-150dp"
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingHorizontal="20dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ivCapa"
-                    android:layout_width="120dp" android:layout_height="180dp"
+                    android:layout_width="124dp" android:layout_height="186dp"
+                    android:background="@color/superficie_2"
                     android:contentDescription="Capa do jogo"
-                    android:scaleType="centerCrop" />
+                    android:elevation="12dp"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/PixelShelf.Forma.Capa" />
 
                 <LinearLayout
                     android:layout_width="0dp" android:layout_height="wrap_content"
@@ -36,68 +50,160 @@
                     <TextView
                         android:id="@+id/tvTitulo"
                         android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceHeadlineSmall" />
-                    <TextView
-                        android:id="@+id/tvPlataforma"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/texto"
+                        android:textSize="22sp" />
+
+                    <LinearLayout
                         android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textAppearance="?attr/textAppearanceBodyMedium" />
-                    <TextView
-                        android:id="@+id/tvStatus"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceBodyMedium" />
-                    <TextView
-                        android:id="@+id/tvNota"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
-                    <TextView
-                        android:id="@+id/tvHoras"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceBodyMedium" />
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tvPlataforma"
+                            style="@style/PixelShelf.Pilula"
+                            android:maxLines="1" />
+                        <TextView
+                            android:id="@+id/tvStatus"
+                            style="@style/PixelShelf.Pilula"
+                            android:layout_marginStart="6dp"
+                            android:maxLines="1"
+                            android:textColor="@color/dourado" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- informações extras (lançamento, desenvolvedora, gênero) -->
-            <TextView
-                android:id="@+id/tvInfo"
+            <!-- Nota e horas em destaque -->
+            <LinearLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:lineSpacingExtra="4dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
+                android:layout_marginHorizontal="20dp" android:layout_marginTop="20dp"
+                android:background="@drawable/bg_cartao"
+                android:orientation="horizontal"
+                android:paddingVertical="14dp">
 
-            <TextView
-                android:id="@+id/tvDescricao"
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvNota"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/dourado"
+                        android:textSize="24sp" />
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Nota"
+                        android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp" android:layout_height="match_parent"
+                    android:background="@color/contorno" />
+
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvHoras"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="@color/texto"
+                        android:textSize="24sp" />
+                    <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Horas jogadas"
+                        android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Sobre: lançamento, desenvolvedora, gênero e descrição -->
+            <LinearLayout
+                android:id="@+id/secaoSobre"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium" />
+                android:layout_marginHorizontal="20dp" android:layout_marginTop="12dp"
+                android:background="@drawable/bg_cartao"
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <TextView
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Sobre o jogo"
+                    android:textAppearance="@style/PixelShelf.Texto.Secao" />
+
+                <TextView
+                    android:id="@+id/tvInfo"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:lineSpacingExtra="6dp"
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvDescricao"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:lineSpacingExtra="3dp"
+                    android:textColor="@color/texto"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Conquistas -->
             <LinearLayout
                 android:id="@+id/secaoConquistas"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:orientation="vertical">
+                android:layout_marginHorizontal="20dp" android:layout_marginTop="12dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_cartao"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="Conquistas"
-                    android:textAppearance="?attr/textAppearanceTitleLarge" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Conquistas"
+                        android:textAppearance="@style/PixelShelf.Texto.Secao" />
+                    <ImageView
+                        android:layout_width="22dp" android:layout_height="22dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_trofeu"
+                        app:tint="@color/dourado" />
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/tvProgressoConquistas"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="13sp" />
                 <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/progressoConquistas"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" android:max="100" />
+                    android:layout_marginTop="10dp" android:layout_marginBottom="8dp"
+                    android:max="100" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvConquistas"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:nestedScrollingEnabled="false" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+    <!-- Toolbar transparente por cima do cabeçalho -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:menu="@menu/menu_detalhe"
+        app:navigationContentDescription="Voltar"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+</FrameLayout>
