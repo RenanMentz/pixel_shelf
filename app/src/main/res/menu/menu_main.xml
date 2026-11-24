@@ -29,6 +29,11 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/acaoContaSteam"
+        android:title="Conta Steam"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/acaoSair"
         android:title="Sair da conta"
         app:showAsAction="never" />

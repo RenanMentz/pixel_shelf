@@ -19,7 +19,9 @@ data class ConquistaSteam(
     val nome: String,
     val descricao: String,
     val iconeUrl: String?,
-    val raridade: Float?
+    val raridade: Float?,
+    val apiName: String? = null,   // id interno na Steam (liga com as conquistas do jogador)
+    val obtida: Boolean = false    // já desbloqueada na conta Steam vinculada
 )
 
 enum class SituacaoConquistas {
@@ -41,8 +43,18 @@ data class JogoSteam(
     val descricao: String?,
     val totalConquistasSteam: Int,
     val conquistas: List<ConquistaSteam>,
-    val situacaoConquistas: SituacaoConquistas
-)
+    val situacaoConquistas: SituacaoConquistas,
+    /** Situação do progresso do usuário; null quando não há conta Steam vinculada. */
+    val situacaoConta: SituacaoConta? = null
+) {
+    val conquistasObtidas: Int get() = conquistas.count { it.obtida }
+}
+
+enum class SituacaoConta {
+    SINCRONIZADA,    // conquistas desbloqueadas na conta já vêm marcadas
+    PERFIL_PRIVADO,  // a Steam não mostrou o progresso (perfil ou detalhes de jogos privados)
+    SEM_PROGRESSO    // não foi possível ler o progresso agora
+}
 
 /** Jogo inexistente ou indisponível na loja. */
 class JogoNaoEncontradoException : Exception()
@@ -61,11 +73,18 @@ class SteamRepository(
             .filter { it.type == "app" && !it.name.isNullOrBlank() }
             .map { ResultadoSteam(it.id, it.name!!, it.imagemPequena) }
 
-    suspend fun detalhes(appId: Int): JogoSteam = coroutineScope {
-        // as três consultas são independentes, então rodam em paralelo
+    /**
+     * Detalhes do jogo. Com [steamIdUsuario] (conta vinculada), as conquistas que o usuário
+     * já desbloqueou na Steam vêm marcadas.
+     */
+    suspend fun detalhes(appId: Int, steamIdUsuario: String? = null): JogoSteam = coroutineScope {
+        // as consultas são independentes, então rodam em paralelo
         val detalhesAsync = async { loja.detalhes(appId)[appId.toString()] }
         val capaAsync = async { escolherCapa(appId) }
         val conquistasAsync = async { carregarConquistas(appId) }
+        val progressoAsync = if (steamIdUsuario != null && temChave) async {
+            runCatching { ContaSteamRepository(chave).conquistasDoJogador(steamIdUsuario, appId) }
+        } else null
 
         val envelope = detalhesAsync.await()
         val d = envelope?.data
@@ -73,7 +92,18 @@ class SteamRepository(
             throw JogoNaoEncontradoException()
         }
         val total = d.achievements?.total ?: 0
-        val (conquistas, situacao) = conquistasAsync.await()
+        val (lista, situacao) = conquistasAsync.await()
+
+        // marca o que o usuário já desbloqueou (liga pelo id interno da conquista)
+        val progresso = progressoAsync?.await()
+        val obtidas = progresso?.getOrNull()?.filter { it.obtida }?.mapNotNull { it.apiName }?.toSet()
+        val conquistas = if (obtidas == null) lista else lista.map { it.copy(obtida = it.apiName in obtidas) }
+        val situacaoConta = when {
+            progresso == null || lista.isEmpty() -> null
+            progresso.isSuccess -> SituacaoConta.SINCRONIZADA
+            progresso.exceptionOrNull() is PerfilPrivadoException -> SituacaoConta.PERFIL_PRIVADO
+            else -> SituacaoConta.SEM_PROGRESSO
+        }
 
         JogoSteam(
             appId = appId,
@@ -91,7 +121,8 @@ class SteamRepository(
             situacaoConquistas = when {
                 situacao == SituacaoConquistas.SEM_CHAVE && total == 0 -> SituacaoConquistas.NENHUMA
                 else -> situacao
-            }
+            },
+            situacaoConta = situacaoConta
         )
     }
 
@@ -120,7 +151,8 @@ class SteamRepository(
                         descricao = c.description?.trim()?.ifEmpty { null }
                             ?: if (c.hidden == 1) "Conquista secreta" else "",
                         iconeUrl = urlIcone(c.icon),
-                        raridade = percentuais[c.name]
+                        raridade = percentuais[c.name],
+                        apiName = c.name
                     )
                 }
                 conquistas to if (conquistas.isEmpty()) SituacaoConquistas.NENHUMA else SituacaoConquistas.IMPORTADAS
@@ -146,10 +178,10 @@ class SteamRepository(
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        private val loja: SteamStoreApi by lazy {
+        internal val loja: SteamStoreApi by lazy {
             retrofit("https://store.steampowered.com/").create(SteamStoreApi::class.java)
         }
-        private val web: SteamWebApi by lazy {
+        internal val web: SteamWebApi by lazy {
             retrofit("https://api.steampowered.com/").create(SteamWebApi::class.java)
         }
 

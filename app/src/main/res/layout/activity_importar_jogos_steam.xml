@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/preto"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        app:navigationContentDescription="Voltar"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="Importar da Steam" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilFiltro"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp" android:layout_marginTop="4dp"
+        android:hint="Pesquisar na sua conta"
+        app:endIconMode="clear_text"
+        app:startIconDrawable="@drawable/ic_busca"
+        app:startIconTint="@color/dourado">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFiltro"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progresso"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp" android:layout_marginTop="8dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:trackThickness="3dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvJogos"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="12dp" android:paddingBottom="16dp" />
+        <TextView
+            android:id="@+id/tvMensagem"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:padding="32dp"
+            android:textColor="@color/texto_secundario"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Rodapé: progresso da importação e botão -->
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:background="@color/superficie"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp" android:paddingVertical="12dp">
+        <TextView
+            android:id="@+id/tvProgresso"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/texto_secundario"
+            android:textSize="13sp"
+            android:visibility="gone" />
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/barraImportacao"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone" />
+        <Button
+            android:id="@+id/btnImportar"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Selecione os jogos" />
+    </LinearLayout>
+</LinearLayout>

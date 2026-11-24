@@ -26,6 +26,7 @@ import com.pixelshelf.data.Plataformas
 import com.pixelshelf.data.SessaoUsuario
 import com.pixelshelf.data.steam.JogoSteam
 import com.pixelshelf.data.steam.SituacaoConquistas
+import com.pixelshelf.data.steam.SituacaoConta
 import com.pixelshelf.databinding.ActivityGameFormBinding
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -231,7 +232,14 @@ class GameFormActivity : AppCompatActivity() {
     private fun mostrarSituacaoSteam(j: JogoSteam) {
         val texto = when (j.situacaoConquistas) {
             SituacaoConquistas.IMPORTADAS ->
-                "✓ ${j.titulo}: ${j.conquistas.size} conquistas serão adicionadas ao salvar."
+                "✓ ${j.titulo}: ${j.conquistas.size} conquistas serão adicionadas ao salvar." +
+                    when (j.situacaoConta) {
+                        SituacaoConta.SINCRONIZADA ->
+                            "\n${j.conquistasObtidas} já desbloqueadas na sua conta Steam."
+                        SituacaoConta.PERFIL_PRIVADO ->
+                            "\nSeu perfil Steam está privado: o progresso não foi trazido."
+                        else -> ""
+                    }
             SituacaoConquistas.NENHUMA ->
                 "✓ ${j.titulo}: esse jogo não tem conquistas na Steam."
             SituacaoConquistas.SEM_CHAVE ->
@@ -263,11 +271,19 @@ class GameFormActivity : AppCompatActivity() {
         capaNovaLocal = null
     }
 
-    /** Regra de negócio: jogo "Na fila" ainda não foi jogado, então não pode ter nota. */
+    /**
+     * Regras de negócio da nota: jogo "Na fila" ainda não foi jogado, então não tem nota;
+     * "Jogando" pode ficar sem nota até o usuário avaliar; "Zerado" precisa de nota.
+     */
     private fun aplicarRegraDaNota() {
-        val naFila = binding.acStatus.text.toString() == GameStatus.NA_FILA
+        val status = binding.acStatus.text.toString()
+        val naFila = status == GameStatus.NA_FILA
         binding.tilNota.isEnabled = !naFila
-        binding.tilNota.hint = if (naFila) "Nota (após jogar)" else "Nota (0 a 10) *"
+        binding.tilNota.hint = when (status) {
+            GameStatus.NA_FILA -> "Nota (após jogar)"
+            GameStatus.ZERADO -> "Nota (0 a 10) *"
+            else -> "Nota (opcional)"
+        }
         if (naFila) {
             binding.etNota.setText("")
             binding.tilNota.error = null
@@ -298,10 +314,12 @@ class GameFormActivity : AppCompatActivity() {
         val erroTitulo = if (titulo.isEmpty()) "Informe o título" else null
         val erroPlataforma = if (plataforma.isEmpty()) "Escolha a plataforma" else null
         val erroStatus = if (status !in GameStatus.OPCOES) "Escolha o status" else null
+        val textoNota = binding.etNota.text.toString().trim()
         val erroNota = when {
             naFila -> null
-            nota == null -> "Informe a nota"
-            nota !in 0f..10f -> "Nota entre 0 e 10"
+            textoNota.isNotEmpty() && nota == null -> "Nota inválida"
+            nota == null && status == GameStatus.ZERADO -> "Jogo zerado precisa de nota"
+            nota != null && nota !in 0f..10f -> "Nota entre 0 e 10"
             else -> null
         }
         val erroHoras = when {
@@ -335,7 +353,10 @@ class GameFormActivity : AppCompatActivity() {
             desenvolvedora = binding.etDesenvolvedora.text.toString().trim().ifEmpty { null },
             genero = binding.etGenero.text.toString().trim().ifEmpty { null },
             descricao = binding.etDescricao.text.toString().trim().ifEmpty { null },
-            favorito = original?.favorito ?: false // a edição não mexe no favorito
+            favorito = original?.favorito ?: false, // a edição não mexe no favorito
+            // id da Steam: vem da importação no cadastro; na edição é mantido
+            steamAppId = if (gameId == 0) viewModel.importado?.appId?.takeIf { plataforma == "PC" }
+            else original?.steamAppId
         )
 
         binding.btnSalvar.isEnabled = false
@@ -355,7 +376,7 @@ class GameFormActivity : AppCompatActivity() {
                         db.conquistaDao().inserirTodas(conquistas.map {
                             Conquista(
                                 jogoId = novoId, nome = it.nome, descricao = it.descricao,
-                                iconeUrl = it.iconeUrl, raridade = it.raridade, obtida = false
+                                iconeUrl = it.iconeUrl, raridade = it.raridade, obtida = it.obtida
                             )
                         })
                     }

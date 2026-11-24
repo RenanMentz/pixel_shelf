@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Game::class, Conquista::class, Usuario::class], version = 5, exportSchema = false)
+@Database(entities = [Game::class, Conquista::class, Usuario::class], version = 6, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun conquistaDao(): ConquistaDao
@@ -20,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext, AppDatabase::class.java, "pixel_shelf.db"
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6).build().also { instance = it }
             }
 
         /**
@@ -109,6 +109,18 @@ abstract class AppDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE games ADD COLUMN usuarioId INTEGER NOT NULL DEFAULT 0")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_games_usuarioId ON games(usuarioId)")
+            }
+        }
+
+        /**
+         * Versão 5 -> 6: vinculação da conta Steam. O usuário ganha o SteamID (único, opcional)
+         * e o jogo guarda o id dele na Steam, usado para sincronizar as conquistas.
+         */
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE usuarios ADD COLUMN steamId TEXT")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_usuarios_steamId ON usuarios(steamId)")
+                db.execSQL("ALTER TABLE games ADD COLUMN steamAppId INTEGER")
             }
         }
     }

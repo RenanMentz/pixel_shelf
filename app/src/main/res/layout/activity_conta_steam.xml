@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/preto"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        app:navigationContentDescription="Voltar"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="Conta Steam" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progresso"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:trackThickness="3dp" />
+
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:paddingHorizontal="16dp"
+            android:paddingTop="8dp" android:paddingBottom="32dp">
+
+            <!-- Sem chave da Steam configurada no build -->
+            <TextView
+                android:id="@+id/tvSemChave"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/bg_cartao"
+                android:lineSpacingExtra="3dp"
+                android:padding="16dp"
+                android:text="A vinculação precisa da chave da Steam Web API configurada no app (steam.apiKey no local.properties; veja o README)."
+                android:textColor="@color/texto_secundario"
+                android:visibility="gone" />
+
+            <!-- Ainda não vinculada -->
+            <LinearLayout
+                android:id="@+id/secaoVincular"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/bg_cartao"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="Vincular conta"
+                    android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                <TextView
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="Cole o link do seu perfil Steam para importar seus jogos e marcar automaticamente as conquistas que você já desbloqueou. Não pedimos sua senha."
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="14sp" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPerfil"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="Link do perfil ou SteamID"
+                    app:endIconMode="clear_text"
+                    app:helperText="Ex.: steamcommunity.com/id/seunome">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPerfil"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="textUri"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <Button
+                    android:id="@+id/btnVincular"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="Vincular" />
+            </LinearLayout>
+
+            <!-- Vinculada -->
+            <LinearLayout
+                android:id="@+id/secaoVinculada"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/bg_cartao"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivAvatar"
+                        android:layout_width="64dp" android:layout_height="64dp"
+                        android:background="@color/superficie_3"
+                        android:contentDescription="Avatar da Steam"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/PixelShelf.Forma.Pilula" />
+                    <LinearLayout
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp" android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Conta vinculada"
+                            android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                        <TextView
+                            android:id="@+id/tvNomeSteam"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-black"
+                            android:maxLines="1"
+                            android:textColor="@color/texto"
+                            android:textSize="20sp" />
+                        <TextView
+                            android:id="@+id/tvSteamId"
+                            android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:textColor="@color/texto_secundario"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnImportar"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Importar jogos da Steam" />
+                <Button
+                    android:id="@+id/btnSincronizar"
+                    style="@style/PixelShelf.Botao.Contorno"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Sincronizar conquistas e horas" />
+
+                <TextView
+                    android:id="@+id/tvResultado"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_cartao"
+                    android:lineSpacingExtra="2dp"
+                    android:padding="14dp"
+                    android:textColor="@color/texto"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="A sincronização marca as conquistas conforme a Steam e atualiza as horas dos jogos de PC. Conquistas criadas manualmente não são alteradas. Seu perfil e os “Detalhes de jogos” precisam estar públicos na Steam."
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnDesvincular"
+                    style="@style/PixelShelf.Botao.Texto"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:text="Desvincular conta Steam" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

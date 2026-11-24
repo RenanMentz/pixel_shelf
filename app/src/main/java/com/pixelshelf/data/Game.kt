@@ -22,7 +22,8 @@ data class Game(
     val genero: String? = null,
     val descricao: String? = null,
     @ColumnInfo(defaultValue = "0")
-    val favorito: Boolean = false
+    val favorito: Boolean = false,
+    val steamAppId: Int? = null     // id do jogo na Steam (importado ou sincronizado)
 )
 
 object GameStatus {

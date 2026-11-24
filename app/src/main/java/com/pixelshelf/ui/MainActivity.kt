@@ -124,6 +124,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.acaoEstatisticas -> {
                     startActivity(Intent(this, EstatisticasActivity::class.java)); true
                 }
+                R.id.acaoContaSteam -> {
+                    startActivity(Intent(this, ContaSteamActivity::class.java)); true
+                }
                 R.id.acaoSair -> { confirmarSaida(); true }
                 else -> false
             }
