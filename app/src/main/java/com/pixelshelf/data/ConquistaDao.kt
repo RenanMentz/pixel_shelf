@@ -12,6 +12,9 @@ interface ConquistaDao {
     @Query("SELECT * FROM conquistas WHERE jogoId = :jogoId ORDER BY raridade DESC, id")
     fun observarDoJogo(jogoId: Int): Flow<List<Conquista>>
 
+    @Query("SELECT * FROM conquistas WHERE jogoId = :jogoId")
+    suspend fun listarDoJogo(jogoId: Int): List<Conquista>
+
     @Insert suspend fun inserirTodas(conquistas: List<Conquista>)
     @Insert suspend fun inserir(conquista: Conquista)
     @Delete suspend fun excluir(conquista: Conquista)

@@ -51,6 +51,43 @@ interface SteamWebApi {
     /** Percentual de jogadores que desbloquearam cada conquista (raridade). */
     @GET("ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/")
     suspend fun percentuais(@Query("gameid") appId: Int): PercentuaisDto
+
+    // ----- conta do usuário (todas precisam de chave) -----
+
+    /** Converte o nome personalizado do perfil (steamcommunity.com/id/NOME) em SteamID64. */
+    @GET("ISteamUser/ResolveVanityURL/v1/")
+    suspend fun resolverNome(
+        @Query("key") chave: String,
+        @Query("vanityurl") nome: String
+    ): ResolverNomeDto
+
+    /** Nome, avatar e visibilidade do perfil. */
+    @GET("ISteamUser/GetPlayerSummaries/v2/")
+    suspend fun perfis(
+        @Query("key") chave: String,
+        @Query("steamids") steamIds: String
+    ): PerfisDto
+
+    /** Jogos da conta com o tempo jogado (vazio se os detalhes de jogos forem privados). */
+    @GET("IPlayerService/GetOwnedGames/v1/")
+    suspend fun jogosDaConta(
+        @Query("key") chave: String,
+        @Query("steamid") steamId: String,
+        @Query("include_appinfo") comNomes: Int = 1,
+        @Query("include_played_free_games") comGratuitos: Int = 1
+    ): JogosDaContaDto
+
+    /**
+     * Conquistas do jogador em um jogo. Responde 403 se o perfil for privado e 400 se o
+     * jogo não tiver conquistas.
+     */
+    @GET("ISteamUserStats/GetPlayerAchievements/v1/")
+    suspend fun conquistasDoJogador(
+        @Query("key") chave: String,
+        @Query("steamid") steamId: String,
+        @Query("appid") appId: Int,
+        @Query("l") idioma: String = "brazilian"
+    ): ConquistasJogadorDto
 }
 
 // ---------- DTOs (formato do JSON da Steam; campos anuláveis porque a Steam omite vários) ----------
@@ -104,3 +141,49 @@ data class PercentuaisDto(val achievementpercentages: ListaPercentuaisDto?)
 data class ListaPercentuaisDto(val achievements: List<PercentualDto>?)
 
 data class PercentualDto(val name: String, val percent: String?)
+
+data class ResolverNomeDto(val response: ResolverNomeRespostaDto?)
+
+data class ResolverNomeRespostaDto(
+    val steamid: String?,
+    val success: Int?   // 1 = encontrado, 42 = não existe
+)
+
+data class PerfisDto(val response: ListaPerfisDto?)
+
+data class ListaPerfisDto(val players: List<PerfilDto>?)
+
+data class PerfilDto(
+    val steamid: String,
+    val personaname: String?,
+    val avatarfull: String?,
+    val profileurl: String?,
+    val communityvisibilitystate: Int?   // 3 = público
+)
+
+data class JogosDaContaDto(val response: ListaJogosDaContaDto?)
+
+data class ListaJogosDaContaDto(
+    @SerializedName("game_count") val total: Int?,   // ausente quando a lista é privada
+    val games: List<JogoDaContaDto>?
+)
+
+data class JogoDaContaDto(
+    val appid: Int,
+    val name: String?,
+    @SerializedName("playtime_forever") val minutosJogados: Int?
+)
+
+data class ConquistasJogadorDto(val playerstats: EstatisticasJogadorDto?)
+
+data class EstatisticasJogadorDto(
+    val success: Boolean?,
+    val error: String?,
+    val achievements: List<ConquistaJogadorDto>?
+)
+
+data class ConquistaJogadorDto(
+    val apiname: String,
+    val achieved: Int?,
+    val name: String?   // nome traduzido (com l=brazilian)
+)

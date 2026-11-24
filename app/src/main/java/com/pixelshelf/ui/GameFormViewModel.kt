@@ -1,7 +1,10 @@
 package com.pixelshelf.ui
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.pixelshelf.data.AppDatabase
+import com.pixelshelf.data.SessaoUsuario
 import com.pixelshelf.data.steam.JogoNaoEncontradoException
 import com.pixelshelf.data.steam.JogoSteam
 import com.pixelshelf.data.steam.SteamRepository
@@ -18,7 +21,7 @@ import java.io.IOException
  * Fica no ViewModel para sobreviver à rotação: a requisição em andamento não se perde e as
  * conquistas importadas continuam guardadas até o jogo ser salvo.
  */
-class GameFormViewModel : ViewModel() {
+class GameFormViewModel(app: Application) : AndroidViewModel(app) {
 
     private val repo = SteamRepository()
 
@@ -43,7 +46,10 @@ class GameFormViewModel : ViewModel() {
         viewModelScope.launch {
             _carregando.value = true
             val evento = try {
-                val jogo = repo.detalhes(appId)
+                // com a conta Steam vinculada, as conquistas já obtidas vêm marcadas
+                val steamId = AppDatabase.get(getApplication()).usuarioDao()
+                    .buscarPorId(SessaoUsuario.idLogado(getApplication()))?.steamId
+                val jogo = repo.detalhes(appId, steamId)
                 importado = jogo
                 Evento.Importado(jogo)
             } catch (e: JogoNaoEncontradoException) {

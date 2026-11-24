@@ -26,5 +26,9 @@
             android:parentActivityName=".ui.MainActivity" />
         <activity android:name=".ui.BuscaSteamActivity" android:exported="false"
             android:parentActivityName=".ui.GameFormActivity" />
+        <activity android:name=".ui.ContaSteamActivity" android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.ImportarJogosSteamActivity" android:exported="false"
+            android:parentActivityName=".ui.ContaSteamActivity" />
     </application>
 </manifest>

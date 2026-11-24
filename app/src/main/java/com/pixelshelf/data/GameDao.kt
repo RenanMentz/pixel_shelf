@@ -43,6 +43,15 @@ interface GameDao {
     @Query("UPDATE games SET usuarioId = :usuarioId WHERE usuarioId = 0")
     suspend fun assumirJogosSemDono(usuarioId: Int)
 
+    @Query("SELECT * FROM games WHERE usuarioId = :usuarioId")
+    suspend fun listarDoUsuario(usuarioId: Int): List<Game>
+
+    @Query("UPDATE games SET steamAppId = :appId WHERE id = :id")
+    suspend fun definirSteamAppId(id: Int, appId: Int)
+
+    @Query("UPDATE games SET horasJogadas = :horas WHERE id = :id")
+    suspend fun definirHoras(id: Int, horas: Float)
+
     @Query("UPDATE games SET favorito = :favorito WHERE id = :id")
     suspend fun definirFavorito(id: Int, favorito: Boolean)
 
