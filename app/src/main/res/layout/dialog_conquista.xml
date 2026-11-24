@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Formulário do diálogo "Nova conquista" -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp" android:paddingTop="12dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilNome"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="Nome *"
+        app:counterEnabled="true" app:counterMaxLength="60">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNome"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:inputType="textCapSentences" android:maxLength="60" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDescricao"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="Como desbloquear"
+        app:counterEnabled="true" app:counterMaxLength="150">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescricao"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:inputType="textMultiLine|textCapSentences" android:maxLength="150" />
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>

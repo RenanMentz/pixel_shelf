@@ -2,11 +2,15 @@ package com.pixelshelf.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "games")
+/** Cada jogo pertence a um usuário: contas diferentes têm bibliotecas separadas. */
+@Entity(tableName = "games", indices = [Index("usuarioId")])
 data class Game(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(defaultValue = "0")
+    val usuarioId: Int,
     val titulo: String,
     val plataforma: String,
     val status: String,             // ver GameStatus

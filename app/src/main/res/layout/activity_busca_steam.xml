@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/preto"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        app:navigationContentDescription="Voltar"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:subtitle="Os dados do jogo preenchem o formulário"
+        app:title="Buscar na Steam" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilBusca"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp" android:layout_marginTop="4dp"
+        android:hint="Nome do jogo"
+        app:endIconMode="clear_text"
+        app:startIconDrawable="@drawable/ic_busca"
+        app:startIconTint="@color/dourado">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBusca"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progresso"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp" android:layout_marginTop="8dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:trackThickness="3dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent" android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvResultados"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="12dp" android:paddingBottom="24dp" />
+
+        <TextView
+            android:id="@+id/tvMensagem"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:padding="32dp"
+            android:textColor="@color/texto_secundario" />
+    </FrameLayout>
+</LinearLayout>

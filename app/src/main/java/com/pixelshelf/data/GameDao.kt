@@ -15,12 +15,13 @@ interface GameDao {
             (SELECT COUNT(*) FROM conquistas c WHERE c.jogoId = g.id) AS totalConquistas,
             (SELECT COUNT(*) FROM conquistas c WHERE c.jogoId = g.id AND c.obtida = 1) AS conquistasObtidas
         FROM games g
+        WHERE g.usuarioId = :usuarioId
         """
     )
-    fun listarResumos(): Flow<List<GameResumo>>
+    fun listarResumos(usuarioId: Int): Flow<List<GameResumo>>
 
-    @Query("SELECT DISTINCT plataforma FROM games ORDER BY plataforma COLLATE NOCASE")
-    fun listarPlataformas(): Flow<List<String>>
+    @Query("SELECT DISTINCT plataforma FROM games WHERE usuarioId = :usuarioId ORDER BY plataforma COLLATE NOCASE")
+    fun listarPlataformas(usuarioId: Int): Flow<List<String>>
 
     @Query("SELECT * FROM games WHERE id = :id")
     fun observarPorId(id: Int): Flow<Game?>
@@ -28,17 +29,19 @@ interface GameDao {
     @Query("SELECT * FROM games WHERE id = :id")
     suspend fun buscarPorId(id: Int): Game?
 
-    /** Usado na regra de negócio que impede jogo duplicado na mesma plataforma. */
+    /** Regra de negócio: o mesmo usuário não pode ter o jogo duas vezes na mesma plataforma. */
     @Query(
         """
         SELECT COUNT(*) FROM games
-        WHERE titulo = :titulo COLLATE NOCASE AND plataforma = :plataforma AND id != :ignorarId
+        WHERE usuarioId = :usuarioId AND titulo = :titulo COLLATE NOCASE
+            AND plataforma = :plataforma AND id != :ignorarId
         """
     )
-    suspend fun contarDuplicados(titulo: String, plataforma: String, ignorarId: Int): Int
+    suspend fun contarDuplicados(usuarioId: Int, titulo: String, plataforma: String, ignorarId: Int): Int
 
-    @Query("SELECT COUNT(*) FROM games")
-    suspend fun contar(): Int
+    /** Jogos de antes da biblioteca por usuário (sem dono) passam para quem entrou. */
+    @Query("UPDATE games SET usuarioId = :usuarioId WHERE usuarioId = 0")
+    suspend fun assumirJogosSemDono(usuarioId: Int)
 
     @Query("UPDATE games SET favorito = :favorito WHERE id = :id")
     suspend fun definirFavorito(id: Int, favorito: Boolean)

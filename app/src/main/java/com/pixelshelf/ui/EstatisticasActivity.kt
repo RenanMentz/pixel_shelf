@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.pixelshelf.data.AppDatabase
 import com.pixelshelf.data.Estatisticas
+import com.pixelshelf.data.SessaoUsuario
 import com.pixelshelf.databinding.ActivityEstatisticasBinding
 import com.pixelshelf.databinding.ItemPlataformaEstatisticaBinding
 import kotlinx.coroutines.launch
@@ -28,9 +29,10 @@ class EstatisticasActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
 
         val dao = AppDatabase.get(this).gameDao()
+        val usuarioId = SessaoUsuario.idLogado(this)
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                dao.listarResumos().collect { mostrar(Estatisticas.calcular(it)) }
+                dao.listarResumos(usuarioId).collect { mostrar(Estatisticas.calcular(it)) }
             }
         }
     }

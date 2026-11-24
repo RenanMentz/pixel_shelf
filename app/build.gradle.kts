@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+}
+
+// Chave da Steam Web API (opcional): fica no local.properties, que não vai para o Git.
+// Sem ela a busca funciona, só as conquistas não são importadas.
+val propriedadesLocais = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
 android {
@@ -14,8 +22,15 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        buildConfigField(
+            "String", "STEAM_API_KEY",
+            "\"${propriedadesLocais.getProperty("steam.apiKey", "").trim()}\""
+        )
     }
-    buildFeatures { viewBinding = true }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -35,6 +50,11 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.3")      // Fragments + activityViewModels()
     implementation("androidx.viewpager2:viewpager2:1.1.0")      // abas por status
     implementation("io.coil-kt:coil:2.7.0") // carregamento das capas
+
+    // Retrofit: busca de jogos e conquistas na Steam
+    val retrofit = "2.11.0"
+    implementation("com.squareup.retrofit2:retrofit:$retrofit")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit")
 
     val room = "2.6.1"
     implementation("androidx.room:room-runtime:$room")

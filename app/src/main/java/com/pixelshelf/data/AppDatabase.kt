@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Game::class, Conquista::class, Usuario::class], version = 4, exportSchema = false)
+@Database(entities = [Game::class, Conquista::class, Usuario::class], version = 5, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun conquistaDao(): ConquistaDao
@@ -20,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext, AppDatabase::class.java, "pixel_shelf.db"
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).build().also { instance = it }
             }
 
         /**
@@ -96,6 +96,19 @@ abstract class AppDatabase : RoomDatabase() {
         val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE games ADD COLUMN favorito INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        /**
+         * Versão 4 -> 5: cada jogo passa a ter dono (biblioteca por usuário).
+         * Antes todos os usuários viam os mesmos jogos. A migração roda antes de se saber quem
+         * vai entrar, então os jogos antigos ficam sem dono (usuarioId = 0) e a primeira conta
+         * que fizer login depois da atualização fica com eles (ver GameDao.assumirJogosSemDono).
+         */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE games ADD COLUMN usuarioId INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_games_usuarioId ON games(usuarioId)")
             }
         }
     }
