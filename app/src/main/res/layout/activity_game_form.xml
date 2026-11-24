@@ -19,6 +19,48 @@
             android:orientation="vertical" android:paddingHorizontal="20dp"
             android:paddingTop="8dp" android:paddingBottom="32dp">
 
+            <!-- Importar da Steam (só ao cadastrar) -->
+            <LinearLayout
+                android:id="@+id/secaoSteam"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_cartao"
+                android:orientation="vertical"
+                android:padding="14dp">
+                <TextView
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="Preencher automaticamente"
+                    android:textAppearance="@style/PixelShelf.Texto.Rotulo" />
+                <TextView
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Busque o jogo na Steam para trazer capa, informações e conquistas."
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="13sp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBuscarSteam"
+                    style="@style/PixelShelf.Botao.Contorno"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Buscar na Steam"
+                    app:icon="@drawable/ic_busca" />
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progressoSteam"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:trackThickness="3dp" />
+                <TextView
+                    android:id="@+id/tvSteam"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
             <!-- Capa -->
             <LinearLayout
                 android:layout_width="match_parent" android:layout_height="wrap_content"

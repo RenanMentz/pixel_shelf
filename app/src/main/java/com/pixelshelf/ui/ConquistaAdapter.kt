@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.pixelshelf.R
 import com.pixelshelf.data.Conquista
+import com.pixelshelf.data.steam.SteamRepository
 import com.pixelshelf.databinding.ItemConquistaBinding
 
-class ConquistaAdapter(private val onAlternar: (Conquista) -> Unit) :
+class ConquistaAdapter(
+    private val onAlternar: (Conquista) -> Unit,
+    private val onExcluir: (Conquista) -> Unit
+) :
     ListAdapter<Conquista, ConquistaAdapter.VH>(Diff) {
 
     class VH(val binding: ItemConquistaBinding) : RecyclerView.ViewHolder(binding.root)
@@ -21,7 +25,8 @@ class ConquistaAdapter(private val onAlternar: (Conquista) -> Unit) :
     override fun onBindViewHolder(holder: VH, position: Int) {
         val c = getItem(position)
         with(holder.binding) {
-            ivIcone.load(c.iconeUrl) {
+            // corrige também ícones importados antes, gravados no domínio antigo da Steam
+            ivIcone.load(SteamRepository.urlIcone(c.iconeUrl)) {
                 crossfade(true)
                 placeholder(R.drawable.ic_trofeu)
                 error(R.drawable.ic_trofeu)
@@ -38,6 +43,7 @@ class ConquistaAdapter(private val onAlternar: (Conquista) -> Unit) :
             cbObtida.isChecked = c.obtida
             cbObtida.setOnCheckedChangeListener { _, _ -> onAlternar(c) }
             root.setOnClickListener { cbObtida.toggle() }
+            root.setOnLongClickListener { onExcluir(c); true } // segurar = excluir
         }
     }
 

@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
         if (id == SessaoUsuario.NENHUM) return
         lifecycleScope.launch {
             val usuario = AppDatabase.get(this@LoginActivity).usuarioDao().buscarPorId(id)
-            if (usuario != null) irParaMain() else SessaoUsuario.sair(this@LoginActivity)
+            if (usuario != null) irParaMain(usuario.id) else SessaoUsuario.sair(this@LoginActivity)
         }
     }
 
@@ -63,12 +63,17 @@ class LoginActivity : AppCompatActivity() {
                 return@launch
             }
             SessaoUsuario.entrar(this@LoginActivity, usuario.id, binding.cbManter.isChecked)
-            irParaMain()
+            irParaMain(usuario.id)
         }
     }
 
-    private fun irParaMain() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
+    private fun irParaMain(usuarioId: Int) {
+        lifecycleScope.launch {
+            // depois da atualização para a biblioteca por usuário, quem entra primeiro
+            // fica com os jogos que já existiam no aparelho
+            AppDatabase.get(this@LoginActivity).gameDao().assumirJogosSemDono(usuarioId)
+            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            finish()
+        }
     }
 }

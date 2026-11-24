@@ -6,6 +6,7 @@ import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import com.pixelshelf.data.AppDatabase
 import com.pixelshelf.data.Conquista
 import com.pixelshelf.data.Game
 import com.pixelshelf.databinding.ActivityGameDetailBinding
+import com.pixelshelf.databinding.DialogConquistaBinding
 import kotlinx.coroutines.launch
 
 class GameDetailActivity : AppCompatActivity() {
@@ -70,9 +72,11 @@ class GameDetailActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = ConquistaAdapter { c ->
-            lifecycleScope.launch { db.conquistaDao().definirObtida(c.id, !c.obtida) }
-        }
+        val adapter = ConquistaAdapter(
+            onAlternar = { c -> lifecycleScope.launch { db.conquistaDao().definirObtida(c.id, !c.obtida) } },
+            onExcluir = { c -> confirmarExclusaoConquista(c) }
+        )
+        binding.btnAdicionarConquista.setOnClickListener { abrirNovaConquista(id) }
         binding.rvConquistas.layoutManager = LinearLayoutManager(this)
         binding.rvConquistas.adapter = adapter
 
@@ -129,8 +133,15 @@ class GameDetailActivity : AppCompatActivity() {
     }
 
     private fun mostrarProgresso(lista: List<Conquista>) {
-        binding.secaoConquistas.visibility = if (lista.isEmpty()) View.GONE else View.VISIBLE
-        if (lista.isEmpty()) return
+        val vazia = lista.isEmpty()
+        binding.tvSemConquistas.visibility = if (vazia) View.VISIBLE else View.GONE
+        binding.tvProgressoConquistas.visibility = if (vazia) View.GONE else View.VISIBLE
+        binding.progressoConquistas.visibility = if (vazia) View.GONE else View.VISIBLE
+        if (vazia) {
+            binding.tvPlatina.visibility = View.GONE
+            platinadoAntes = false
+            return
+        }
         val obtidas = lista.count { it.obtida }
         val pct = obtidas * 100 / lista.size
         val platinado = obtidas == lista.size
@@ -149,6 +160,57 @@ class GameDetailActivity : AppCompatActivity() {
             Snackbar.make(binding.root, "🏆 Parabéns! Você platinou ${game?.titulo ?: "o jogo"}!", Snackbar.LENGTH_LONG).show()
         }
         platinadoAntes = platinado
+    }
+
+    /** Cadastro manual de conquista (para jogos sem conquistas da Steam). */
+    private fun abrirNovaConquista(jogoId: Int) {
+        val form = DialogConquistaBinding.inflate(layoutInflater)
+        val dialogo = MaterialAlertDialogBuilder(this)
+            .setTitle("Nova conquista")
+            .setView(form.root)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Adicionar", null) // o clique é tratado abaixo para validar antes de fechar
+            .show()
+        form.etNome.requestFocus()
+
+        dialogo.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val nome = form.etNome.text.toString().trim()
+            val descricao = form.etDescricao.text.toString().trim()
+            if (nome.isEmpty()) {
+                form.tilNome.error = "Informe o nome da conquista"
+                return@setOnClickListener
+            }
+            lifecycleScope.launch {
+                val dao = AppDatabase.get(this@GameDetailActivity).conquistaDao()
+                // Regra de negócio: não pode repetir o nome de uma conquista no mesmo jogo
+                if (dao.contarPorNome(jogoId, nome) > 0) {
+                    form.tilNome.error = "Esse jogo já tem uma conquista com esse nome"
+                    return@launch
+                }
+                dao.inserir(
+                    Conquista(
+                        jogoId = jogoId, nome = nome, descricao = descricao,
+                        iconeUrl = null, raridade = null, obtida = false
+                    )
+                )
+                dialogo.dismiss()
+                Toast.makeText(this@GameDetailActivity, "Conquista adicionada", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun confirmarExclusaoConquista(c: Conquista) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Excluir conquista")
+            .setMessage("Remover a conquista \"${c.nome}\" deste jogo?")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Excluir") { _, _ ->
+                lifecycleScope.launch {
+                    AppDatabase.get(this@GameDetailActivity).conquistaDao().excluir(c)
+                    Snackbar.make(binding.root, "Conquista excluída", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .show()
     }
 
     private fun alternarFavorito() {

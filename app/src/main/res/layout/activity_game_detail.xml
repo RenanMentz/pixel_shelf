@@ -185,12 +185,24 @@
                         android:layout_weight="1"
                         android:text="Conquistas"
                         android:textAppearance="@style/PixelShelf.Texto.Secao" />
-                    <ImageView
-                        android:layout_width="22dp" android:layout_height="22dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/ic_trofeu"
-                        app:tint="@color/dourado" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAdicionarConquista"
+                        style="@style/PixelShelf.Botao.Texto"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:minHeight="40dp"
+                        android:text="Adicionar"
+                        app:icon="@drawable/ic_adicionar"
+                        app:iconTint="@color/dourado" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvSemConquistas"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Nenhuma conquista cadastrada. Toque em “Adicionar” para criar uma.\nSegure uma conquista para excluí-la."
+                    android:textColor="@color/texto_secundario"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tvProgressoConquistas"

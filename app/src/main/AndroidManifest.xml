@@ -24,5 +24,7 @@
             android:parentActivityName=".ui.MainActivity" />
         <activity android:name=".ui.EstatisticasActivity" android:exported="false"
             android:parentActivityName=".ui.MainActivity" />
+        <activity android:name=".ui.BuscaSteamActivity" android:exported="false"
+            android:parentActivityName=".ui.GameFormActivity" />
     </application>
 </manifest>

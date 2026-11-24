@@ -1,19 +1,31 @@
 package com.pixelshelf.ui
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.room.withTransaction
 import coil.load
 import com.pixelshelf.R
 import com.pixelshelf.data.AppDatabase
+import com.pixelshelf.data.Conquista
 import com.pixelshelf.data.Game
 import com.pixelshelf.data.GameStatus
 import com.pixelshelf.data.Plataformas
+import com.pixelshelf.data.SessaoUsuario
+import com.pixelshelf.data.steam.JogoSteam
+import com.pixelshelf.data.steam.SituacaoConquistas
 import com.pixelshelf.databinding.ActivityGameFormBinding
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -23,6 +35,7 @@ import java.util.Locale
 /**
  * Cadastro (Create) e edição (Update) de jogo.
  * Sem EXTRA_GAME_ID abre em modo "novo jogo"; com o id, carrega o jogo para editar.
+ * No modo "novo jogo" dá para buscar o jogo na Steam (Retrofit) e preencher os campos.
  */
 class GameFormActivity : AppCompatActivity() {
 
@@ -34,7 +47,9 @@ class GameFormActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityGameFormBinding
-    private val dao by lazy { AppDatabase.get(this).gameDao() }
+    private val db by lazy { AppDatabase.get(this) }
+    private val dao by lazy { db.gameDao() }
+    private val viewModel: GameFormViewModel by viewModels()
 
     private var gameId = 0                   // 0 = novo jogo
     private var original: Game? = null       // jogo carregado no modo edição
@@ -44,6 +59,13 @@ class GameFormActivity : AppCompatActivity() {
     private var salvo = false
 
     private val formatoIso = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+    /** Volta da BuscaSteamActivity com o appid do jogo escolhido. */
+    private val buscarNaSteam =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
+            val appId = r.data?.getIntExtra(BuscaSteamActivity.EXTRA_APP_ID, 0) ?: 0
+            if (r.resultCode == Activity.RESULT_OK && appId != 0) viewModel.importar(appId)
+        }
 
     private val escolherCapa =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -89,6 +111,43 @@ class GameFormActivity : AppCompatActivity() {
             binding.etLancamento.setText("")
         }
         binding.btnSalvar.setOnClickListener { salvar() }
+
+        binding.secaoSteam.visibility = if (gameId == 0) View.VISIBLE else View.GONE
+        binding.btnBuscarSteam.setOnClickListener {
+            buscarNaSteam.launch(
+                Intent(this, BuscaSteamActivity::class.java)
+                    .putExtra(BuscaSteamActivity.EXTRA_TERMO, binding.etTitulo.text.toString().trim())
+            )
+        }
+        viewModel.importado?.let { mostrarSituacaoSteam(it) } // após girar a tela
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.carregando.collect { carregando ->
+                        binding.progressoSteam.visibility = if (carregando) View.VISIBLE else View.GONE
+                        binding.btnBuscarSteam.isEnabled = !carregando
+                        binding.btnSalvar.isEnabled = !carregando
+                        if (carregando) {
+                            binding.tvSteam.visibility = View.VISIBLE
+                            binding.tvSteam.setTextColor(cor(R.color.texto_secundario))
+                            binding.tvSteam.text = "Carregando dados da Steam…"
+                        }
+                    }
+                }
+                launch {
+                    viewModel.eventos.collect { e ->
+                        when (e) {
+                            is GameFormViewModel.Evento.Importado -> preencher(e.jogo)
+                            is GameFormViewModel.Evento.Erro -> {
+                                binding.tvSteam.visibility = View.VISIBLE
+                                binding.tvSteam.setTextColor(cor(R.color.erro))
+                                binding.tvSteam.text = e.mensagem
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         if (savedInstanceState != null) {
             // Ciclo de vida: ao girar a tela os campos de texto são restaurados pelo Android;
@@ -143,6 +202,51 @@ class GameFormActivity : AppCompatActivity() {
         capaUrl = g.capaUrl
         mostrarCapa()
         aplicarRegraDaNota()
+    }
+
+    private fun cor(id: Int) = ContextCompat.getColor(this, id)
+
+    /** Preenche o formulário com o jogo da Steam. Status, nota e horas ficam com o usuário. */
+    private fun preencher(j: JogoSteam) {
+        with(binding) {
+            etTitulo.setText(j.titulo)
+            tilTitulo.error = null
+            acPlataforma.setText("PC", false) // a Steam é a loja de PC
+            tilPlataforma.error = null
+            etDesenvolvedora.setText(j.desenvolvedora.orEmpty())
+            etGenero.setText(j.genero.orEmpty())
+            etDescricao.setText(j.descricao.orEmpty())
+        }
+        dataIso = j.dataLancamento
+        binding.etLancamento.setText(Formatos.data(j.dataLancamento).orEmpty())
+        binding.tilLancamento.error = null
+        if (j.capaUrl != null) {
+            descartarCapaNova()
+            capaUrl = j.capaUrl
+            mostrarCapa()
+        }
+        mostrarSituacaoSteam(j)
+    }
+
+    private fun mostrarSituacaoSteam(j: JogoSteam) {
+        val texto = when (j.situacaoConquistas) {
+            SituacaoConquistas.IMPORTADAS ->
+                "✓ ${j.titulo}: ${j.conquistas.size} conquistas serão adicionadas ao salvar."
+            SituacaoConquistas.NENHUMA ->
+                "✓ ${j.titulo}: esse jogo não tem conquistas na Steam."
+            SituacaoConquistas.SEM_CHAVE ->
+                "${j.titulo} tem ${j.totalConquistasSteam} conquistas na Steam, mas a chave da Steam " +
+                    "não está configurada (veja o README). Você pode adicioná-las manualmente depois."
+            SituacaoConquistas.CHAVE_INVALIDA ->
+                "A Steam recusou a chave configurada: as conquistas não foram importadas."
+            SituacaoConquistas.FALHA ->
+                "Não foi possível carregar as conquistas agora. O resto dos dados foi preenchido."
+        }
+        val ok = j.situacaoConquistas == SituacaoConquistas.IMPORTADAS ||
+            j.situacaoConquistas == SituacaoConquistas.NENHUMA
+        binding.tvSteam.visibility = View.VISIBLE
+        binding.tvSteam.text = texto
+        binding.tvSteam.setTextColor(cor(if (ok) R.color.dourado else R.color.texto_secundario))
     }
 
     private fun mostrarCapa() {
@@ -217,8 +321,10 @@ class GameFormActivity : AppCompatActivity() {
         binding.tilLancamento.error = erroData
         if (listOf(erroTitulo, erroPlataforma, erroStatus, erroNota, erroHoras, erroData).any { it != null }) return
 
+        val usuarioId = SessaoUsuario.idLogado(this)
         val dados = Game(
             id = gameId,
+            usuarioId = usuarioId,
             titulo = titulo,
             plataforma = plataforma,
             status = status,
@@ -235,12 +341,28 @@ class GameFormActivity : AppCompatActivity() {
         binding.btnSalvar.isEnabled = false
         lifecycleScope.launch {
             // Regra de negócio: não pode haver o mesmo jogo duas vezes na mesma plataforma
-            if (dao.contarDuplicados(titulo, plataforma, gameId) > 0) {
+            if (dao.contarDuplicados(usuarioId, titulo, plataforma, gameId) > 0) {
                 binding.tilTitulo.error = "Esse jogo já está na biblioteca para $plataforma"
                 binding.btnSalvar.isEnabled = true
                 return@launch
             }
-            if (gameId == 0) dao.inserir(dados) else dao.atualizar(dados)
+            if (gameId == 0) {
+                val conquistas = viewModel.importado?.conquistas.orEmpty()
+                // jogo e conquistas gravados juntos: ou salva tudo, ou nada
+                db.withTransaction {
+                    val novoId = dao.inserir(dados).toInt()
+                    if (conquistas.isNotEmpty()) {
+                        db.conquistaDao().inserirTodas(conquistas.map {
+                            Conquista(
+                                jogoId = novoId, nome = it.nome, descricao = it.descricao,
+                                iconeUrl = it.iconeUrl, raridade = it.raridade, obtida = false
+                            )
+                        })
+                    }
+                }
+            } else {
+                dao.atualizar(dados)
+            }
 
             // capa antiga substituída/removida: apaga o arquivo local antigo
             val capaAntiga = original?.capaUrl
